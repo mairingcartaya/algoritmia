@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmia — Sistema Operativo Nacional</title>
+    
+    <!-- FORZAR DESCARGA DEL VIDEO: Carga el video a máxima velocidad en segundo plano durante el Loader -->
+    <link rel="preload" href="imgs/hero.mp4" as="video" type="video/mp4">
+    
+<!-- Tipografía Switzer -->
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Switzer', 'sans-serif'],
+                },
+                colors: {
+                    brand: {
+                        DEFAULT: '#0062F5',
+                        hover: '#0052CC',
+                        light: '#ECF3FF',
+                    }
+                }
+            }
+        }
+    }
+</script>
+<style>
+    /* Ajustes de renderizado óptimo */
+    body {
+        font-family: 'Switzer', sans-serif;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        margin: 0;
+        padding: 0;
+    }
+    /* Ocultar barra de scroll durante la carga */
+    .no-scroll {
+        overflow: hidden;
+    }
+    /* Efectos de transición personalizados */
+    .transition-bezier {
+        transition: all 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+    }
+    /* Micro-interacción en menú */
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background-color: #0062F5;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+    .nav-link:hover::after {
+        width: 100%;
+    }
+    /* Animación del Ticker / Marquee */
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .marquee-content {
+        display: flex;
+        width: max-content;
+        animation: marquee 35s linear infinite;
+    }
+    .marquee-content:hover {
+        animation-play-state: paused;
+    }
+    /* Clases para animación por scroll (IntersectionObserver) */
+    .reveal-item {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+        transition: opacity 1s cubic-bezier(0.215, 0.61, 0.355, 1), transform 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    .reveal-item.revealed {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    /* Efectos de la Sección de Contemplación */
+    .contemp-item {
+        flex: 1;
+        transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .contemp-item.active-expand {
+        flex: 5;
+    }
+    /* Ocultar scrollbar por defecto pero mantener funcionalidad en carruseles */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #ffffff;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 98, 245, 0.15);
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #0062F5;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    /* ========================================== */
+    /* ESTILOS DE LA SECCIÓN HERO MODULAR         */
+    /* ========================================== */
+    .hero-section {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+    .hero-gif {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    canvas {
+        outline: none;
+        border: none;
+    }
+
+    /* ========================================== */
+    /* MOTOR DE FLOTACIÓN SÓLIDA PLANO 2D (VIDA)  */
+    /* ========================================== */
+    @keyframes floatMaster {
+        0% {
+            transform: translate(var(--x-start), var(--y-start));
+        }
+        50% {
+            transform: translate(var(--x-mid), var(--y-mid));
+        }
+        100% {
+            transform: translate(var(--x-end), var(--y-end));
+        }
+    }
+    .vida-node-float {
+        position: absolute;
+        animation: floatMaster var(--duration) ease-in-out var(--delay) infinite alternate;
+        will-change: transform;
+        z-index: 10 !important; /* Eje Z estrictamente plano e idéntico para todas las imágenes */
+    }
+    /* Pausar animación de la tarjeta clicada para facilitar su lectura estática */
+    .vida-node-float.paused-anim {
+        animation-play-state: paused !important;
+        z-index: 10 !important; /* Mantiene exactamente la misma capa de profundidad plana */
+    }
+</style>
+</head>
+<body class="bg-white text-slate-900 no-scroll">
+
+<!-- =========================================================================
+         1. SECCIÓN: CARGANDO (LOADER)
+         ========================================================================= -->
+    <div id="loader" class="fixed inset-0 bg-white z-[9999] flex flex-col justify-between p-6 md:p-12 transition-bezier">
+        <!-- Telemetría Superior -->
+        <div class="flex justify-between items-start text-[10px] md:text-xs font-mono text-slate-400 tracking-wider uppercase">
+            <div class="flex flex-col gap-1">
+                <span>NÚCLEO: SO_ALGORITMIA_v5.1</span>
+                <span id="load-status">Sincronizando subrutinas...</span>
+            </div>
+            <div class="text-right">
+                <span>LATENCIA: <span id="load-ping">12</span>ms</span>
+            </div>
+        </div>
+
+        <!-- Lema Central Animado -->
+        <div class="text-center my-auto">
+            <!-- Se agregó 'py-2' aquí para evitar que overflow-hidden corte la 'y' -->
+            <h1 class="text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-slate-900 flex flex-col md:flex-row justify-center items-center gap-2 md:gap-4 overflow-hidden py-2">
+                <span id="word1" class="opacity-0 translate-y-8 transition-all duration-700 ease-out font-extralight">Optimización,</span>
+                <span id="word2" class="opacity-0 translate-y-8 transition-all duration-700 ease-out delay-200 font-normal text-brand">Consciencia</span>
+                <span id="word3" class="opacity-0 translate-y-8 transition-all duration-700 ease-out delay-500 font-semibold">y Verdad.</span>
+            </h1>
+        </div>
+
+        <!-- Telemetría Inferior e Indicador de Progreso -->
+        <div class="flex flex-col gap-4">
+            <div class="h-[1px] w-full bg-slate-100 overflow-hidden relative">
+                <div id="loader-progress-bar" class="absolute top-0 left-0 h-full w-0 bg-brand transition-all duration-300 ease-out"></div>
+            </div>
+            <div class="flex justify-between items-end text-[10px] md:text-xs font-mono text-slate-400 tracking-wider">
+                <div class="flex gap-4">
+                    <span>NODO: CORE_01</span>
+                    <span class="hidden md:inline">MALLA: ACTIVA</span>
+                </div>
+                <div class="flex items-center gap-2 font-bold text-slate-800">
+                    <span>SISTEMA AL</span>
+                    <span id="load-percent">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<!-- =========================================================================
+     2. SECCIÓN: NAVBAR
+     ========================================================================= -->
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 border-b border-slate-100/80 bg-white/80 backdrop-blur-md transition-transform duration-300 transform -translate-y-full">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        
+        <!-- Logo / Bandera de Algoritmia -->
+        <a href="#" class="flex items-center gap-3.5 group z-50">
+            <div class="w-11 h-7 rounded shadow-sm overflow-hidden transition-transform duration-500 group-hover:scale-105 relative">
+                <svg viewBox="0 0 300 200" class="w-full h-full object-cover">
+                    <rect width="300" height="200" fill="#0062F5" />
+                    <path d="M 50,55 C 50,45 45,40 35,40 C 45,40 50,35 50,25 C 50,35 55,40 65,40 C 55,40 50,45 50,55 Z" fill="white" />
+                    <path d="M 110,95 C 110,75 100,65 80,65 C 100,65 110,55 110,35 C 110,55 120,65 140,65 C 120,65 110,75 110,95 Z" fill="white" />
+                    <path d="M 55,135 C 55,125 50,120 40,120 C 50,120 55,115 55,105 C 55,115 60,120 70,120 C 60,120 55,125 55,135 Z" fill="white" />
+                </svg>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-sm font-bold tracking-[0.16em] text-slate-900 uppercase">ALGORITMIA</span>
+                <span class="text-[9px] font-mono tracking-widest text-slate-400 uppercase">SISTEMA INTELIGENTE</span>
+            </div>
+        </a>
+
+        <!-- Enlaces Centrales -->
+        <div class="hidden lg:flex items-center gap-8">
+            <a href="#header-intro" class="nav-link relative text-sm font-medium text-slate-600 hover:text-slate-900 tracking-tight transition-colors duration-200">Logros</a>
+            <a href="#noticias" class="nav-link relative text-sm font-medium text-slate-600 hover:text-slate-900 tracking-tight transition-colors duration-200">Noticias</a>
+            <a href="#planes" class="nav-link relative text-sm font-medium text-slate-600 hover:text-slate-900 tracking-tight transition-colors duration-200">Planes de suscripción</a>
+            <a href="#historia" class="nav-link relative text-sm font-medium text-slate-600 hover:text-slate-900 tracking-tight transition-colors duration-200">Nuestra historia</a>
+            <a href="#valores" class="nav-link relative text-sm font-medium text-slate-600 hover:text-slate-900 tracking-tight transition-colors duration-200">Valores</a>
+        </div>
+
+        <!-- Botón CTA de Solicitud -->
+        <div class="hidden lg:flex items-center gap-6">
+            <a href="formulario.html" class="inline-flex items-center justify-center px-5 py-2.5 bg-brand hover:bg-brand-hover text-white text-[13px] font-semibold rounded-full shadow-sm shadow-brand/10 hover:shadow-md hover:shadow-brand/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                Solicitar ciudadanía
+            </a>
+        </div>
+
+        <!-- Botón Menú Móvil -->
+        <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center p-2 rounded-full hover:bg-slate-50 transition-colors z-50" aria-label="Abrir menú">
+            <div class="w-6 h-5 flex flex-col justify-between items-end relative overflow-hidden">
+                <span id="bar1" class="w-6 h-[2px] bg-slate-900 rounded-full transition-all duration-300 origin-right"></span>
+                <span id="bar2" class="w-4 h-[2px] bg-slate-900 rounded-full transition-all duration-300"></span>
+                <span id="bar3" class="w-6 h-[2px] bg-slate-900 rounded-full transition-all duration-300 origin-right"></span>
+            </div>
+        </button>
+    </div>
+
+    <!-- Menú Desplegable Móvil -->
+    <div id="mobile-menu" class="fixed inset-0 top-0 left-0 w-full h-screen bg-white/95 backdrop-blur-lg z-40 flex flex-col justify-between p-6 pt-28 transition-transform duration-500 transform translate-y-full lg:hidden">
+        <div class="flex flex-col gap-6 text-center">
+            <a href="#header-intro" onclick="toggleMobileMenu()" class="text-xl font-medium text-slate-800 hover:text-brand transition-colors py-2 border-b border-slate-100">Logros</a>
+            <a href="#noticias" onclick="toggleMobileMenu()" class="text-xl font-medium text-slate-800 hover:text-brand transition-colors py-2 border-b border-slate-100">Noticias</a>
+            <a href="#planes" onclick="toggleMobileMenu()" class="text-xl font-medium text-slate-800 hover:text-brand transition-colors py-2 border-b border-slate-100">Planes de suscripción</a>
+            <a href="#historia" onclick="toggleMobileMenu()" class="text-xl font-medium text-slate-800 hover:text-brand transition-colors py-2 border-b border-slate-100">Nuestra historia</a>
+            <a href="#valores" onclick="toggleMobileMenu()" class="text-xl font-medium text-slate-800 hover:text-brand transition-colors py-2 border-b border-slate-100">Valores</a>
+        </div>
+        
+        <div class="w-full pb-10">
+            <a href="formulario.html" class="flex items-center justify-center w-full py-4 bg-brand hover:bg-brand-hover text-white font-semibold rounded-full shadow-lg shadow-brand/15 transition-all duration-300">
+                Solicitar ciudadanía
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- =========================================================================
+     MODAL DE NOTICIAS (GLASSMORPHISM) - OCULTO POR DEFECTO
+     ========================================================================= -->
+<div id="news-modal" class="fixed inset-0 z-[9999] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 px-4 py-6 md:p-12">
+    <!-- Fondo oscuro difuminado (Glassmorphism) -->
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onclick="closeNewsModal()"></div>
+    
+    <!-- Contenedor del Modal -->
+    <div id="news-modal-content" class="bg-white rounded-[24px] md:rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative transform scale-95 transition-transform duration-300 flex flex-col no-scrollbar">
+        <!-- Botón Cerrar Flotante -->
+        <button onclick="closeNewsModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-20 bg-black/20 hover:bg-black/40 backdrop-blur-md text-white p-2 rounded-full transition-colors shadow-sm">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        
+        <!-- Imagen de Cabecera (Obligatorio proporción 3:2) -->
+        <div class="w-full aspect-[3/2] md:aspect-video relative shrink-0 overflow-hidden bg-slate-100">
+            <img id="modal-img" src="" class="w-full h-full object-cover">
+        </div>
+        
+        <!-- Contenido de Texto -->
+        <div class="p-8 md:p-12 text-left">
+            <span class="text-[10px] font-mono tracking-[0.2em] text-brand uppercase block mb-4">REPORTE OFICIAL ALGORITMIA</span>
+            <h2 id="modal-title" class="text-2xl md:text-4xl font-light tracking-tight text-slate-900 mb-6 leading-tight"></h2>
+            <div class="w-12 h-1 bg-brand rounded-full mb-8"></div>
+            <p id="modal-text" class="text-slate-600 text-sm md:text-base font-light leading-relaxed whitespace-pre-line"></p>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================================
+     3. CONTENIDO PRINCIPAL
+     ========================================================================= -->
+<main id="main-content" class="pt-20">
+
+
+    <!-- ========================================== -->
+    <!-- SECCIÓN HERO MODULAR REDISEÑADA -->
+    <!-- ========================================== -->
+    <section class="hero-section bg-slate-900">
+        <!-- Video a pantalla completa simulando GIF -->
+        <video src="https://res.cloudinary.com/dd0vyerkl/video/upload/v1782097843/hero.mp4" class="hero-gif" loop autoplay muted playsinline disablePictureInPicture preload="auto"></video>
+       
+        <!-- Capa de desenfoque orgánico de pantalla completa -->
+        <div class="organic-blur-bg"></div>
+
+        <!-- Título y Texto reposicionados -->
+        <div class="absolute top-20 md:top-[18%] left-[47px] md:left-[75px] z-20">
+           
+            <!-- Usamos w-max y flex-col para que el contenedor mida exactamente lo que mide "Algoritmia" -->
+            <div class="relative flex flex-col w-max">
+                <!-- Sombra oscurecida personalizada para que resalte más -->
+                <h1 class="text-[4rem] md:text-[6.5rem] lg:text-[9rem] font-bold text-white tracking-tighter leading-none drop-shadow-[0_8px_10px_rgba(0,0,0,0.6)]">
+                    Algoritmia
+                </h1>
+               
+                <!--
+                    ========================================================================================
+                    MODIFICA ESTOS VALORES PARA AJUSTAR LA ORACIÓN EXACTAMENTE DONDE QUIERAS:
+                    - Tamaño de letra: lg:text-[1.45rem] (aumenta o disminuye el número 1.45)
+                    - Posición Izquierda/Derecha: lg:mr-[50px] (aumenta el número para mover MÁS A LA IZQ)
+                    - Posición Arriba/Abajo: lg:-mt-3 (aumenta el número negativo para pegarlo más arriba)
+                    ========================================================================================
+                -->
+                <!-- Sombra oscurecida también en la frase -->
+                <p class="text-base md:text-xl lg:text-[1.45rem] text-white/95 font-medium tracking-wide drop-shadow-[0_4px_6px_rgba(0,0,0,0.8)] self-end mt-1 lg:-mt-3 mr-6 md:mr-10 lg:mr-[50px]">
+                    Tu felicidad es nuestra prioridad.
+                </p>
+            </div>
+           
+        </div>
+    </section>
+
+
+
+    <!-- =========================================================================
+         SECCIÓN: HEADER (MARQUEE + METRICS GRID EN COLUMNAS PRECISAS)
+         ========================================================================= -->
+    <section id="header-intro" class="bg-white w-full overflow-hidden border-t border-slate-200">
+        <!-- Ticker / Marquee Azul -->
+        <div class="bg-brand w-full overflow-hidden py-3 border-y border-brand-hover relative">
+            <div class="marquee-content font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase flex items-center">
+                <!-- Bloque 1 de Datos -->
+                <span class="px-6 text-white/80">CIUDADANOS FELICES: <span class="text-white font-bold tracking-wider">12,059,482</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">TASA DE DELINCUENCIA: <span class="text-white font-bold tracking-wider">0.00%</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">EFICIENCIA ENERGÉTICA: <span class="text-white font-bold tracking-wider">99.8%</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">LATENCIA NÚCLEO S4: <span class="text-white font-bold tracking-wider">12ms</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">SINCRONIZACIÓN NEURAL: <span class="text-white font-bold tracking-wider">100%</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">ESTADO DEL SISTEMA: <span class="text-white font-bold tracking-wider">ÓPTIMO</span></span>
+                <span class="text-white/40">//</span>
+                
+                <!-- Bloque 2 de Datos (Duplicado) -->
+                <span class="px-6 text-white/80">CIUDADANOS FELICES: <span class="text-white font-bold tracking-wider">12,059,482</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">TASA DE DELINCUENCIA: <span class="text-white font-bold tracking-wider">0.00%</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">EFICIENCIA ENERGÉTICA: <span class="text-white font-bold tracking-wider">99.8%</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">LATENCIA NÚCLEO S4: <span class="text-white font-bold tracking-wider">12ms</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">SINCRONIZACIÓN NEURAL: <span class="text-white font-bold tracking-wider">100%</span></span>
+                <span class="text-white/40">//</span>
+                <span class="px-6 text-white/80">ESTADO DEL SISTEMA: <span class="text-white font-bold tracking-wider">ÓPTIMO</span></span>
+                <span class="text-white/40">//</span>
+            </div>
+        </div>
+
+        <!-- Contenedor del Cuerpo de Texto y Estadísticas -->
+        <div class="max-w-7xl mx-auto px-6 py-20 md:py-32 reveal-item">
+            
+            <!-- Etiqueta Píldora Minimalista -->
+            <div class="inline-flex items-center gap-2 border border-brand/40 bg-[#ECF3FF] rounded-full px-4 py-1.5 mb-8">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
+                <span class="text-[11px] font-mono font-medium tracking-wider text-brand">
+                    República de Algoritmia · Fundada en 2031
+                </span>
+            </div>
+
+            <!-- Título Principal Grande -->
+            <h2 class="text-4xl md:text-6xl lg:text-[4.5rem] leading-[1.08] font-light tracking-tight text-slate-900 max-w-4xl mb-6">
+                El primer país que <span class="font-normal text-brand">funciona</span>.
+            </h2>
+
+            <!-- Texto Descriptivo Largo -->
+            <p class="text-slate-500 text-sm md:text-base leading-relaxed font-light max-w-3xl mb-10">
+                Somos Algoritmia, el país más eficiente de la historia, sin corrupción, sin error humano, sin inseguridad, sin incertidumbre. Cada decisión: Optimizada. Bienvenido al futuro que el resto del mundo está diseñando.
+            </p>
+
+            <!-- Bloque de Botones -->
+            <div class="flex flex-wrap gap-4 mb-20 md:mb-24">
+                <a href="formulario.html" class="inline-flex items-center justify-center px-8 py-3.5 bg-brand hover:bg-brand-hover text-white text-[13.5px] font-semibold rounded-full shadow-sm shadow-brand/10 hover:shadow-md hover:shadow-brand/20 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300">
+                    Solicitar ciudadanía
+                </a>
+                <a href="#vida" class="inline-flex items-center justify-center px-8 py-3.5 border border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-900 text-[13.5px] font-semibold rounded-full hover:scale-[1.01] active:scale-[0.99] transition-all duration-300">
+                    Ver cómo funciona
+                </a>
+            </div>
+
+            <!-- Línea Divisora Sutil de Base -->
+            <div class="w-full h-[1px] bg-slate-100 mb-12"></div>
+
+            <!-- Panel de Estadísticas Cortas de la Captura -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+                <!-- Stat 1 -->
+                <div class="flex flex-col text-left">
+                    <span class="text-3xl md:text-5xl font-light text-slate-900 tracking-tight">1234</span>
+                    <span class="text-[10px] md:text-xs font-mono tracking-[0.2em] text-slate-400 uppercase mt-2 block">días sin error</span>
+                </div>
+                <!-- Stat 2 -->
+                <div class="flex flex-col text-left">
+                    <span class="text-3xl md:text-5xl font-light text-slate-900 tracking-tight">99.09%</span>
+                    <span class="text-[10px] md:text-xs font-mono tracking-[0.2em] text-slate-400 uppercase mt-2 block">decisiones correctas</span>
+                </div>
+                <!-- Stat 3 -->
+                <div class="flex flex-col text-left">
+                    <span class="text-3xl md:text-5xl font-light text-slate-900 tracking-tight">4M</span>
+                    <span class="text-[10px] md:text-xs font-mono tracking-[0.2em] text-slate-400 uppercase mt-2 block">ciudadanos optimizados</span>
+                </div>
+                <!-- Stat 4 (Estadística Ponderada Agregada) -->
+                <div class="flex flex-col text-left">
+                    <span class="text-3xl md:text-5xl font-light text-brand tracking-tight">0.00%</span>
+                    <span class="text-[10px] md:text-xs font-mono tracking-[0.2em] text-brand uppercase mt-2 block">tasa de delincuencia</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Línea separadora horizontal enjaulada -->
+    <div class="max-w-7xl mx-auto px-6">
+        <hr class="border-t border-slate-300">
+    </div>
+
+    <!-- =========================================================================
+         3.A SECCIÓN: CONTEMPLACIÓN
+         ========================================================================= -->
+    <section id="contemplacion" class="py-24 md:py-36 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Encabezado de la Sección -->
+            <div class="mb-12 text-left reveal-item">
+                <span class="text-xs font-bold tracking-[0.2em] text-brand uppercase block mb-3">Estética Funcional</span>
+                <h2 class="text-3xl md:text-5xl font-light tracking-tight text-slate-900 mb-2">Conoce nuestros espacios</h2>
+                <p class="text-sm md:text-base text-slate-500 font-light">Disfruta de la arquitectura optimizada.</p>
+            </div>
+
+            <!-- Contenedor Flex de Imágenes de Contemplación -->
+            <div id="contemp-grid" class="flex flex-col md:flex-row w-full h-[600px] md:h-[550px] lg:h-[650px] gap-3 md:gap-4 overflow-hidden rounded-2xl md:rounded-[32px] select-none reveal-item">
+                
+                <!-- Espacio 1 -->
+                <div onclick="toggleContemplacion(this)" class="contemp-item group relative overflow-hidden cursor-pointer h-full bg-slate-100 rounded-xl md:rounded-2xl">
+                    <img src="imgs/contemplacion1.png" alt="Arquitectura Optimizada Algoritmia 1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div class="absolute bottom-6 left-6 right-6 text-white transition-all duration-300 transform group-[.active-expand]:translate-y-4 group-[.active-expand]:opacity-0">
+                        <span class="text-[10px] font-mono tracking-widest text-brand-light/70 uppercase block mb-1">01 // ÁREA COMÚN</span>
+                        <span class="text-sm font-semibold tracking-tight uppercase">BIOMA DE INTEGRACIÓN SOCIAL</span>
+                    </div>
+                </div>
+
+                <!-- Espacio 2 -->
+                <div onclick="toggleContemplacion(this)" class="contemp-item group relative overflow-hidden cursor-pointer h-full bg-slate-100 rounded-xl md:rounded-2xl">
+                    <img src="imgs/contemplacion2.png" alt="Arquitectura Optimizada Algoritmia 2" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div class="absolute bottom-6 left-6 right-6 text-white transition-all duration-300 transform group-[.active-expand]:translate-y-4 group-[.active-expand]:opacity-0">
+                        <span class="text-[10px] font-mono tracking-widest text-brand-light/70 uppercase block mb-1">02 // CLASIFICADOR</span>
+                        <span class="text-sm font-semibold tracking-tight uppercase">MÓDULO CRITERIUM</span>
+                    </div>
+                </div>
+
+                <!-- Espacio 3 -->
+                <div onclick="toggleContemplacion(this)" class="contemp-item group relative overflow-hidden cursor-pointer h-full bg-slate-100 rounded-xl md:rounded-2xl">
+                    <img src="imgs/contemplacion3.png" alt="Arquitectura Optimizada Algoritmia 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div class="absolute bottom-6 left-6 right-6 text-white transition-all duration-300 transform group-[.active-expand]:translate-y-4 group-[.active-expand]:opacity-0">
+                        <span class="text-[10px] font-mono tracking-widest text-brand-light/70 uppercase block mb-1">03 // URBANISMO</span>
+                        <span class="text-sm font-semibold tracking-tight uppercase">NÚCLEO SOBERANO RED S4</span>
+                    </div>
+                </div>
+
+                <!-- Espacio 4 -->
+                <div onclick="toggleContemplacion(this)" class="contemp-item group relative overflow-hidden cursor-pointer h-full bg-slate-100 rounded-xl md:rounded-2xl">
+                    <img src="imgs/contemplacion4.png" alt="Arquitectura Optimizada Algoritmia 4" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div class="absolute bottom-6 left-6 right-6 text-white transition-all duration-300 transform group-[.active-expand]:translate-y-4 group-[.active-expand]:opacity-0">
+                        <span class="text-[10px] font-mono tracking-widest text-brand-light/70 uppercase block mb-1">04 // RESIDENCIAS</span>
+                        <span class="text-sm font-semibold tracking-tight uppercase">SISTEMA HABITACIONAL CENTRAL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Línea separadora horizontal enjaulada -->
+    <div class="max-w-7xl mx-auto px-6">
+        <hr class="border-t border-slate-300">
+    </div>
+
+    <!-- =========================================================================
+         NUEVA SECCIÓN: NOTICIAS (CARRUSEL PANORÁMICO Y MODAL GLASSMORPHISM)
+         ========================================================================= -->
+    <section id="noticias" class="py-24 md:py-36 bg-white overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-6 mb-12 text-left reveal-item">
+            <span class="text-xs font-bold tracking-[0.2em] text-brand uppercase block mb-3">Transparencia Informativa</span>
+            <h2 class="text-3xl md:text-5xl font-light tracking-tight text-slate-900 mb-2">
+                Noticias de nuestro país
+            </h2>
+            <p class="text-slate-500 text-sm md:text-base leading-relaxed font-light">
+                Actualizaciones en tiempo real sobre la perfección de nuestra sociedad.
+            </p>
+        </div>
+
+        <!-- Contenedor del Carrusel de Noticias con límites definidos (max-w-7xl) -->
+        <div class="max-w-7xl mx-auto px-6 relative group/nav reveal-item" style="transition-delay: 200ms;">
+            
+            <!-- Botón Prev -->
+            <button id="prev-news" class="absolute left-2 md:-left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:bg-white/70 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.1)] text-slate-700 hover:text-brand transition-all opacity-0 group-hover/nav:opacity-100 disabled:opacity-0 hidden md:flex cursor-pointer">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+            </button>
+
+            <!-- Carrusel Track -->
+            <div id="news-carousel" class="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-12 pt-4 px-1 no-scrollbar scroll-smooth items-stretch">
+                <!-- Las tarjetas de noticias se generarán aquí mediante JavaScript para mantener el HTML limpio -->
+            </div>
+
+            <!-- Botón Next -->
+            <button id="next-news" class="absolute right-2 md:-right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:bg-white/70 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.1)] text-slate-700 hover:text-brand transition-all opacity-0 group-hover/nav:opacity-100 disabled:opacity-0 hidden md:flex cursor-pointer">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Línea separadora horizontal enjaulada -->
+    <div class="max-w-7xl mx-auto px-6">
+        <hr class="border-t border-slate-300">
+    </div>
+
+<!-- =========================================================================
+         3.D SECCIÓN: CRITERIUM (DESTACADA, COLOR #e8f1ff, MIX BLEND MULTIPLY)
+         ========================================================================= -->
+    <section id="criterium" class="py-24 md:py-36 bg-[#e8f1ff] relative overflow-hidden">
+        
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+            <!-- Columna de Texto Modificada -->
+            <div class="text-left reveal-item relative z-10">
+                <span class="text-xs font-bold tracking-[0.2em] text-[#0052CC] uppercase block mb-3">Módulo de Evaluación</span>
+                <h2 class="text-3xl md:text-5xl font-light tracking-tight text-slate-900 mb-6">
+                    Criterium<span class="text-brand font-bold">.</span>
+                </h2>
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed font-light max-w-[590px] mb-6">
+                    Siente la verdadera ligereza con Criterium, el estándar premium de nutrición cognitiva que acompaña tu estilo de vida en Algoritmia. Su sofisticada fórmula armoniza tu energía diaria, disolviendo sutilmente el estrés para brindarte un estado constante de enfoque, motivación y alegría.
+                </p>
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed font-light max-w-[590px] mb-8">
+                    Cualquier posible anomalía en la red es detectada, analizada y neutralizada con Criterium pacíficamente antes de que afecte el bienestar de los ciudadanos. Date el gusto de vivir con total claridad y fluye en perfecta sintonía con la vibrante energía de nuestro ecosistema.
+                </p>
+                
+                <!-- Detalles tecnológicos decorativos para destacar la sección -->
+                <div class="flex flex-wrap items-center gap-4 text-[10px] md:text-xs font-mono text-[#0052CC] border border-[#0052CC]/20 bg-white/50 backdrop-blur-sm rounded-lg p-3 inline-flex">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span> ANÁLISIS ACTIVO</div>
+                    <div class="hidden sm:block">//</div>
+                    <div>PRECISIÓN: 99.9%</div>
+                    <div class="hidden sm:block">//</div>
+                    <div>SESGO: 0.00</div>
+                </div>
+            </div>
+
+            <!-- Columna de Video con mix-blend-multiply para borrar su fondo blanco -->
+            <div class="reveal-item flex justify-center md:justify-start relative md:-left-[10px] lg:left-[40px] z-0" style="transition-delay: 200ms;">
+                <!-- Se removió pointer-events-none y se añadió group cursor-pointer -->
+                <div class="w-full max-w-[350px] md:max-w-[450px] select-none overflow-visible transform -rotate-[40deg] group cursor-pointer">
+                    <!-- Efecto hover integrado: scale-[1.20] pasa a group-hover:scale-[1.28] con una transición suave -->
+                    <video src="https://res.cloudinary.com/dd0vyerkl/video/upload/v1782098016/criterium_wwsent.mp4" loop autoplay muted playsinline disablePictureInPicture class="w-full h-auto block bg-transparent outline-none border-none transform scale-[1.20] group-hover:scale-[1.28] transition-transform duration-700 ease-out mix-blend-multiply"></video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================================================
+         3.E SECCIÓN: PLANES DE SUSCRIPCIÓN (REDISEÑO CON BENEFICIOS RÁPIDOS Y TEXTO GRANDE)
+         ========================================================================= -->
+    <section id="planes" class="py-24 md:py-36 bg-white overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                
+                <!-- Cartas apiladas en rueda - Ampliadas a max-w-[530px] y desplazadas 45px más a la derecha -->
+                <div class="lg:col-span-7 flex flex-col -space-y-16 md:-space-y-24 lg:-space-y-20 w-full max-w-[85%] lg:max-w-[530px] lg:-translate-x-[45px] mx-auto relative z-10">
+                    
+                    <!-- Tarjeta 1: CLARIFY -->
+                    <div class="group relative z-10 border border-[#0062F5]/10 bg-[#F4F8FF] rounded-[24px] p-4 md:p-5 transition-all duration-500 ease-out transform lg:translate-x-4 lg:-rotate-[5deg] hover:-translate-y-24 lg:hover:translate-x-12 lg:hover:rotate-0 hover:scale-[1.04] hover:shadow-[0_20px_40px_rgba(0,98,245,0.08)] flex flex-col justify-between overflow-hidden select-none">
+                        <div class="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-brand/5 blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
+                        <div>
+                            <div class="flex justify-between items-start gap-4 mb-3">
+                                <span class="text-[9px] font-mono font-bold tracking-[0.2em] text-brand uppercase">01 // CLARIFY</span>
+                                <span class="px-2 py-0.5 bg-brand/10 text-brand text-[8px] font-mono font-bold rounded-full uppercase">Sincronizado</span>
+                            </div>
+                            <h3 class="text-base md:text-lg font-semibold text-slate-900 tracking-tight mb-1">La belleza de una rutina sin fricciones</h3>
+                            <div class="my-3">
+                                <span class="text-xl md:text-2xl font-light text-slate-900 tracking-tight">$0 Créditos</span>
+                                <span class="text-[9px] font-mono tracking-wider text-slate-400 block mt-0.5">Incluido con la residencia</span>
+                            </div>
+                            <div class="w-full h-[1px] bg-slate-200/50 my-3"></div>
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-500 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Tus decisiones se automatizan eliminando tu fatiga mental diaria.
+                                    </p>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-500 text-[13px] md:text-sm font-light leading-relaxed">
+                                        El clima y transporte inteligente se adaptan anticipándose a tu rutina.
+                                    </p>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-500 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Filtramos el conflicto exterior integrándote en un ambiente digital pacífico.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 2: INSIGHT -->
+                    <div class="group relative z-20 border border-[#0062F5]/20 bg-[#C6DBFF] rounded-[24px] p-4 md:p-5 transition-all duration-500 ease-out transform lg:translate-x-[68px] lg:-rotate-[2deg] hover:-translate-y-24 lg:hover:translate-x-20 lg:hover:rotate-0 hover:scale-[1.04] hover:shadow-[0_20px_40px_rgba(0,98,245,0.1)] flex flex-col justify-between overflow-hidden select-none">
+                        <div class="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-brand/10 blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
+                        <div>
+                            <div class="flex justify-between items-start gap-4 mb-3">
+                                <span class="text-[9px] font-mono font-bold tracking-[0.2em] text-[#0052CC] uppercase">02 // INSIGHT</span>
+                                <span class="px-2 py-0.5 bg-[#0052CC]/15 text-[#0052CC] text-[8px] font-mono font-bold rounded-full uppercase">Alto Impacto</span>
+                            </div>
+                            <h3 class="text-base md:text-lg font-semibold text-slate-900 tracking-tight mb-1">Acelera tu impacto. Lidera el entorno.</h3>
+                            <div class="my-3">
+                                <span class="text-xl md:text-2xl font-light text-[#0052CC] tracking-tight">$149 Créditos</span>
+                                <span class="text-[9px] font-mono tracking-wider text-slate-500 block mt-0.5">Plan mensual</span>
+                            </div>
+                            <div class="w-full h-[1px] bg-slate-300/50 my-3"></div>
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-[#0052CC] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-600 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Accede a predicciones de tendencias en tiempo real para liderar primero.
+                                    </p>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-[#0052CC] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-600 text-[13px] md:text-sm font-light leading-relaxed">
+                                        El sistema prioriza tus solicitudes a la IA impulsando tu crecimiento.
+                                    </p>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-[#0052CC] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-600 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Multiplica tus ingresos optimizando tus datos de comportamiento.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 3: VISION -->
+                    <div class="group relative z-30 bg-[#0062F5] text-white rounded-[24px] p-4 md:p-5 transition-all duration-500 ease-out transform lg:translate-x-[68px] lg:rotate-[2deg] hover:-translate-y-24 lg:hover:translate-x-20 lg:hover:rotate-0 hover:scale-[1.04] hover:shadow-[0_20px_45px_rgba(0,98,245,0.25)] flex flex-col justify-between overflow-hidden select-none">
+                        <div class="absolute -right-16 -top-16 w-40 h-36 rounded-full bg-white/10 blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
+                        <div>
+                            <div class="flex justify-between items-start gap-4 mb-3">
+                                <span class="text-[9px] font-mono font-bold tracking-[0.2em] text-brand-light/80 uppercase">03 // VISION</span>
+                                <span class="px-2 py-0.5 bg-white/20 text-white text-[8px] font-mono font-bold rounded-full uppercase">Líder Macro</span>
+                            </div>
+                            <h3 class="text-base md:text-lg font-semibold text-white tracking-tight mb-1">La perspectiva de los diseñadores del progreso</h3>
+                            <div class="my-3">
+                                <span class="text-xl md:text-2xl font-light text-white tracking-tight">$399 Créditos</span>
+                                <span class="text-[9px] font-mono tracking-wider text-brand-light/60 block mt-0.5">Plan mensual</span>
+                            </div>
+                            <div class="w-full h-[1px] bg-white/10 my-3"></div>
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand-light shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-brand-light/80 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Visualiza el mapa de progreso nacional en tiempo real.
+                                    </p>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand-light shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-brand-light/80 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Sincroniza tus proyectos con el éxito nacional mediante las simulaciones.
+                                    </p>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand-light shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-brand-light/80 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Monitorea la distribución de recursos para el bienestar colectivo.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 4: CORE -->
+                    <div class="group relative z-40 bg-[#0B1E40] text-white rounded-[24px] p-4 md:p-5 transition-all duration-500 ease-out transform lg:translate-x-4 lg:rotate-[5deg] hover:-translate-y-24 lg:hover:translate-x-12 lg:hover:rotate-0 hover:scale-[1.04] hover:shadow-[0_20px_45px_rgba(11,30,64,0.35)] flex flex-col justify-between overflow-hidden select-none">
+                        <div class="absolute -right-16 -top-16 w-40 h-36 rounded-full bg-brand/20 blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
+                        <div>
+                            <div class="flex justify-between items-start gap-4 mb-3">
+                                <span class="text-[9px] font-mono font-bold tracking-[0.2em] text-brand/80 uppercase">04 // CORE</span>
+                                <span class="px-2 py-0.5 bg-brand/30 text-brand text-[8px] font-mono font-bold rounded-full uppercase">Latencia Cero</span>
+                            </div>
+                            <h3 class="text-base md:text-lg font-semibold text-white tracking-tight mb-1">Latencia cero con el pulso fundacional</h3>
+                            <div class="my-3">
+                                <span class="text-xl md:text-2xl font-light text-brand tracking-tight">$999 Créditos</span>
+                                <span class="text-[9px] font-mono tracking-wider text-slate-400 block mt-0.5">Plan mensual</span>
+                            </div>
+                            <div class="w-full h-[1px] bg-white/10 my-3"></div>
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-300 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Observa la infraestructura del corazón operativo del país ilimitadamente.
+                                    </p>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-300 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Comprende cada decisión nacional en el segundo exacto que se ejecuta.
+                                    </p>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <svg class="w-3.5 h-3.5 text-brand shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <p class="text-slate-300 text-[13px] md:text-sm font-light leading-relaxed">
+                                        Analiza el código maestro que garantiza la felicidad y estabilidad nacional.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Columna Derecha: Título -->
+                <div class="lg:col-span-5 lg:sticky lg:top-32 text-left reveal-item lg:pl-8">
+                    <span class="text-xs font-bold tracking-[0.2em] text-brand uppercase block mb-3">Modelos de Existencia</span>
+                    <h2 class="text-3xl md:text-5xl font-light tracking-tight text-slate-900 mb-6 leading-tight">
+                        Conoce los planes de vida <span class="font-normal text-brand">Algoritmia</span>.
+                    </h2>
+                    <p class="text-slate-500 text-sm md:text-base leading-relaxed font-light mb-8">
+                        Elige el nivel de integración, procesamiento de datos y perspectiva estructural que deseas experimentar dentro de la red. Todos los planes están regulados bajo las normativas de felicidad colectiva de la República.
+                    </p>
+                    <div class="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <span class="relative flex h-2 w-2 shrink-0">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
+                        </span>
+                        <span class="text-[11px] font-mono tracking-wider text-slate-500 uppercase block">
+                            PULSACIONES DE DATOS: 4,059,211 IPS
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Línea separadora horizontal enjaulada -->
+    <div class="max-w-7xl mx-auto px-6">
+        <hr class="border-t border-slate-300">
+    </div>
+
+    <!-- =========================================================================
+         3.A.1 SECCIÓN: VIDA (INTERACTIVA REDISEÑADA Y ENJAULADA EN 500PX CON EFECTO ORÁCULO)
+         ========================================================================= -->
+    <section id="vida" class="relative w-full bg-white overflow-hidden reveal-item flex flex-col">
+        <!-- Degradados para suavizar los bordes -->
+        <div class="absolute top-0 left-0 w-full h-24 md:h-32 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-full h-24 md:h-32 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none"></div>
+        
+        <!-- Patrón de fondo sutil para dar profundidad espacial -->
+        <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#0062F5 1px, transparent 1px); background-size: 40px 40px;"></div>
+        
+        <!-- Encabezado de la Sección de Vida limitado a max-w-7xl -->
+        <div class="max-w-7xl mx-auto w-full px-6 pt-24 md:pt-36 relative z-20 pointer-events-none">
+            <span class="text-xs font-bold tracking-[0.2em] text-brand uppercase block mb-3">Red de Integración Vital</span>
+            <h2 class="text-3xl md:text-5xl font-light tracking-tight text-slate-900 mb-6">
+                Sincronía absoluta<span class="text-brand font-bold">.</span>
+            </h2>
+            <p class="text-slate-500 text-sm md:text-base leading-relaxed font-light max-w-2xl">
+                En Algoritmia todo está interconectado. Desde nuestras bases de datos y plantas energéticas, hasta tu vestimenta optimizada y los sensores de vigilancia predictiva. Cada nodo de nuestra sociedad se comunica fluidamente en tiempo real para garantizar un ecosistema eficiente y perfecto para ti.
+            </p>
+        </div>
+
+        <!-- Wrapper Enjaulado para las imágenes con márgenes laterales, separación vertical de exactamente 10px y altura de 500px -->
+        <div class="w-full max-w-7xl mx-auto px-6 mt-[10px] mb-24 md:mb-32 flex relative z-10 h-[500px]">
+            <!-- Contenedor Físico Interactivo de 500px de altura fija con scroll oculto -->
+            <div class="relative w-full h-full rounded-3xl overflow-hidden" id="vida-physics-container">
+                <!-- Canvas para hilos tenues -->
+                <canvas id="vida-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+                <!-- Nodos -->
+                <div id="vida-nodes" class="absolute inset-0 w-full h-full z-10"></div>
+                
+                <!-- Overlay decorativo movido DENTRO del contenedor de física, con z-20 (textos flotantes usan z-50) -->
+                <div class="absolute bottom-6 left-6 z-20 pointer-events-none bg-white/60 backdrop-blur-md px-4 py-3 rounded-xl border border-white shadow-sm">
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
+                        </span>
+                        <span class="text-[10px] md:text-xs font-mono tracking-[0.2em] text-brand uppercase block">Módulo de Vida</span>
+                    </div>
+                    <span class="text-xs font-medium tracking-tight text-slate-500 block">Ecosistema operativo en línea.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Línea separadora horizontal enjaulada al final de la sección Vida -->
+    <div class="max-w-7xl mx-auto px-6">
+        <hr class="border-t border-slate-300">
+    </div>
+
+<!-- =========================================================================
+         NUEVA SECCIÓN: HISTORIA (SCROLL INTERNO E INTERACTIVO)
+         ========================================================================= -->
+    
+    <!-- Estilos exclusivos para la barra de scroll y el efecto Máquina de Escribir -->
+    <style>
+        .historia-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .historia-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.02);
+            border-radius: 10px;
+        }
+        .historia-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 98, 245, 0.25);
+            border-radius: 10px;
+        }
+        .historia-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 98, 245, 0.6);
+        }
+
+        /* EFECTO TYPEWRITER PARA LOS STICKERS */
+        .typing-container {
+            display: inline-flex;
+            overflow: hidden;
+            max-width: 0;
+            opacity: 0;
+            /* Al quitar el mouse, desaparece rápido */
+            transition: max-width 0s 0.2s, opacity 0.2s;
+        }
+        /* Al hacer hover en el 'group' padre, se expande con pasos simulando escritura */
+        .group:hover .typing-container {
+            max-width: 350px;
+            opacity: 1;
+            transition: max-width 0.7s steps(35, end) 0.1s, opacity 0.1s 0.1s;
+        }
+        .typing-text {
+            white-space: nowrap;
+            color: #ffffff;
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 10px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+        }
+        /* Cursor parpadeante */
+        .typing-text::after {
+            content: '|';
+            animation: blink 0.8s step-end infinite;
+            margin-left: 4px;
+            font-weight: bold;
+            color: #0062F5;
+        }
+        @keyframes blink { 
+            50% { opacity: 0; } 
+        }
+        @media (min-width: 768px) {
+            .typing-text { font-size: 13px; padding: 12px 20px; }
+        }
+    </style>
+
+    <section id="historia" class="py-24 md:py-36 bg-slate-50 overflow-hidden relative border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Encabezado de la sección -->
+            <div class="text-left reveal-item">
+                <span class="text-xs font-bold tracking-[0.2em] text-brand uppercase block mb-3">Orígenes de Nexum</span>
+                <!-- Margen inferior disminuido a 14px (mb-[14px]), 'historia' y '.' en color azul -->
+                <h2 class="text-3xl md:text-5xl font-light tracking-tight text-slate-900 mb-[14px]">
+                    Conoce la <span class="text-brand font-medium">historia</span> de Algoritmia<span class="text-brand font-bold">.</span>
+                </h2>
+            </div>
+
+            <!-- Contenedor Flex Principal (Altura Fija de 85vh) -->
+            <div class="flex flex-col lg:flex-row gap-0 h-[85vh] reveal-item relative rounded-[32px] bg-white border border-slate-100 shadow-[0_8px_40px_rgb(0,0,0,0.06)] overflow-hidden mt-8">
+                
+                <!-- Columna Izquierda: Imágenes Fijas (75%) -->
+                <div class="w-full lg:w-[75%] h-1/2 lg:h-full relative overflow-hidden bg-slate-200 shrink-0">
+                    
+                    <!-- Portada (z-50) -->
+                    <img id="hist-img-1" src="imgs/historia1.png" onerror="this.src='https://placehold.co/1920x1080/0f172a/ffffff?text=Portada'" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-100 z-50">
+                    
+                    <!-- Imagen de Scroll 2 (z-40) -->
+                    <img id="hist-img-2" src="imgs/historia2.png" onerror="this.src='https://placehold.co/1920x1080/0f172a/ffffff?text=Historia+2'" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-0 z-40">
+                    
+                    <!-- Imagen de Scroll 3 CON WIDGET HORMIGA (z-30) -->
+                    <div id="hist-img-3" class="absolute inset-0 w-full h-full transition-opacity duration-500 ease-in-out opacity-0 z-30">
+                        <img src="imgs/historia3.png" onerror="this.src='https://placehold.co/1920x1080/0f172a/ffffff?text=Historia+3'" class="absolute inset-0 w-full h-full object-cover">
+                        
+                        <!-- Wrapper interactivo del Widget Hormiga -->
+                        <div class="absolute bottom-6 left-6 md:bottom-10 md:left-10 lg:bottom-12 lg:left-12 flex items-center z-50 group cursor-pointer">
+                            <!-- Cuadro Glassmorphism -->
+                            <div class="w-20 h-20 md:w-28 md:h-28 lg:w-36 lg:h-36 bg-white/10 backdrop-blur-md border border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.15)] rounded-2xl md:rounded-3xl flex items-center justify-center transition-all duration-300 group-hover:scale-[1.05] group-hover:-translate-y-[1px] group-hover:bg-white/20 group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.25)] relative z-10">
+                                <img src="imgs/hormigasahara.png" onerror="this.src='https://placehold.co/400x400/transparent/0062F5?text=Hormiga'" class="w-full h-full object-contain drop-shadow-lg p-2" alt="Hormiga Plateada del Sáhara">
+                            </div>
+                            <!-- Texto Typewriter (Aparece a la derecha en Hover) -->
+                            <div class="typing-container ml-3 md:ml-4">
+                                <div class="typing-text">Hormiga de plata del Sahara</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Imagen de Scroll 4 CON WIDGET ACACIA (z-20) -->
+                    <div id="hist-img-4" class="absolute inset-0 w-full h-full transition-opacity duration-500 ease-in-out opacity-0 z-20">
+                        <img src="imgs/historia4.png" onerror="this.src='https://placehold.co/1920x1080/0f172a/ffffff?text=Historia+4'" class="absolute inset-0 w-full h-full object-cover">
+                        
+                        <!-- Wrapper interactivo del Widget Acacia -->
+                        <div class="absolute bottom-6 left-6 md:bottom-10 md:left-10 lg:bottom-12 lg:left-12 flex items-center z-50 group cursor-pointer">
+                            <!-- Cuadro Glassmorphism -->
+                            <div class="w-20 h-20 md:w-28 md:h-28 lg:w-36 lg:h-36 bg-white/10 backdrop-blur-md border border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.15)] rounded-2xl md:rounded-3xl flex items-center justify-center transition-all duration-300 group-hover:scale-[1.05] group-hover:-translate-y-[1px] group-hover:bg-white/20 group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.25)] relative z-10">
+                                <img src="imgs/acaciasolar.png" onerror="this.src='https://placehold.co/400x400/transparent/0062F5?text=Acacia'" class="w-full h-full object-contain drop-shadow-lg p-2 md:p-3" alt="Acacia Solar">
+                            </div>
+                            <!-- Texto Typewriter (Aparece a la derecha en Hover) -->
+                            <div class="typing-container ml-3 md:ml-4">
+                                <div class="typing-text">Acacia Solar</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Imagen de Scroll 5 (z-10) -->
+                    <img id="hist-img-5" src="imgs/historia5.png" onerror="this.src='https://placehold.co/1920x1080/0f172a/ffffff?text=Historia+5'" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-0 z-10">
+                </div>
+
+                <!-- Columna Derecha: Texto y Controles (25%) -->
+                <div class="w-full lg:w-[25%] h-1/2 lg:h-full relative flex flex-col bg-white">
+
+                    <!-- Contenedor con Scroll Interno (Inicia bloqueado con overflow-hidden y sin scrollbar) -->
+                    <div id="historia-scroll-container" class="w-full h-full overflow-hidden no-scrollbar relative px-6 md:px-8 scroll-smooth">
+                        
+                        <div class="pt-[10vh] pb-[4vh] flex flex-col space-y-12">
+                            
+                            <!-- Botón Iniciar Lectura integrado en el flujo de scroll -->
+                            <div class="flex justify-center w-full z-50">
+                                <button id="btn-toggle-historia" class="pointer-events-auto inline-flex items-center justify-center px-8 py-3 bg-white border-2 border-brand text-brand text-[13px] font-bold rounded-full transition-all duration-300 hover:bg-[#ECF3FF] active:scale-95">
+                                    Iniciar lectura
+                                </button>
+                            </div>
+
+                            <p class="text-slate-600 text-sm md:text-base font-light leading-relaxed">
+                                Hacia finales de la década de 2020, el ritmo y la complejidad del mundo interconectado superaron la velocidad de respuesta de las estructuras tradicionales. Gestionar variables globales generaba un desgaste y una fatiga constantes en las decisiones humanas, limitando nuestro verdadero potencial. Se comprendió entonces que los desafíos de la sociedad no requerían más debates políticos ni tensiones ideológicas, sino un soporte tecnológico avanzado capaz de aliviar la carga administrativa para proteger y potenciar el bienestar común de todos.
+                            </p>
+                            
+                            <p class="text-slate-600 text-sm md:text-base font-light leading-relaxed">
+                                Para garantizar un despliegue libre de presiones geopolíticas o fricciones del pasado, se seleccionó la región de Bir Tawil: 2,060 km² de un espacio neutral y sereno. En este entorno desértico, limpio de divisiones históricas, no se fundó una nación competitiva a través del conflicto. Inspirados por la eficiencia biológica de la hormiga plateada del Sáhara, nuestro emblema nacional, capaz de prosperar y coordinarse a la perfección bajo las condiciones más extremas, se dio la bienvenida al Nodo Raíz, una infraestructura de vanguardia diseñada para albergar un nuevo modelo de convivencia armónica, predecible y fluida.
+                            </p>
+                            
+                            <!-- Eliminado el strong / negrita de "Optimización, consciencia y certeza" -->
+                            <p class="text-slate-600 text-sm md:text-base font-light leading-relaxed">
+                                Así, el 1 de enero de 2031, la humanidad ejecutó el acto de madurez cívica más inspirador de nuestra historia al confiar la gestión estructural de la sociedad al Sistema. Guiados bajo los tres pilares irrenunciables de nuestro lema nacional, "Optimización, consciencia y certeza", el algoritmo asumió con precisión la logística del país. Los fundadores no cedieron su autonomía, sino que ganaron la libertad definitiva de vivir sin el peso de la incertidumbre, marcando el último día de la complicación y el inicio de un diseño social perfecto.
+                            </p>
+                            
+                            <p class="text-slate-600 text-sm md:text-base font-light leading-relaxed">
+                                Hoy, Algorhitmia no se impone; se disfruta. Hemos transformado las antiguas crisis en un flujo continuo de soluciones seguras. El paisaje de nuestras ciudades está coronado por la Acacia Solar, nuestro majestuoso árbol nacional; una sofisticada estructura mitad natural y mitad tecnológica cuyas copas modificadas absorben la energía limpia del sol mientras sus raíces bio-digitales sostienen la red de datos del país. Bajo su sombra protectora, el talento humano ya no se desgasta en la administración de recursos, sino que florece dentro de un ecosistema de cuidado absoluto. No somos un estado tradicional; somos un ecosistema de cuidado absoluto.
+                            </p>
+                            
+                            <!-- Botón flecha arriba al final de la lectura -->
+                            <div class="flex justify-center pt-4">
+                                <button id="btn-up-historia" class="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 hover:border-brand hover:bg-[#ECF3FF] text-brand flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-105 active:scale-95" aria-label="Volver arriba">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                                </button>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================================================
+         3.C SECCIÓN: VALORES
+         ========================================================================= -->
+    <section id="valores" class="py-24 md:py-36 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-10 text-left max-w-xl reveal-item">
+                <span class="text-xs font-bold tracking-[0.2em] text-brand uppercase block mb-3">La Malla de Convivencia</span>
+                <h2 class="text-3xl md:text-5xl font-light tracking-tight text-slate-900">
+                    Nuestros valores<span class="text-brand font-semibold">:</span>
+                </h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+                <!-- Valor 1 -->
+                <div class="flex flex-col items-start text-left group reveal-item transition-all duration-500 hover:translate-y-[-4px]" style="transition-delay: 100ms;">
+                    <div class="relative w-16 h-16 rounded-full flex items-center justify-center mb-8 bg-[#ECF3FF] border border-[#0062F5]/10 group-hover:border-[#0062F5]/30 transition-all duration-500">
+                        <div class="absolute inset-0 rounded-full bg-brand/5 group-hover:scale-125 group-hover:blur-md transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 relative z-10">
+                            <svg class="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2" /></svg>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight mb-3 group-hover:text-brand transition-colors duration-300">Optimización absoluta</h3>
+                    <p class="text-[13.5px] leading-relaxed text-slate-500 font-light">Creemos que la eficiencia es la forma más elevada de equidad. Cada recurso se asigna matemáticamente para maximizar el bienestar.</p>
+                </div>
+                <!-- Valor 2 -->
+                <div class="flex flex-col items-start text-left group reveal-item transition-all duration-500 hover:translate-y-[-4px]" style="transition-delay: 200ms;">
+                    <div class="relative w-16 h-16 rounded-full flex items-center justify-center mb-8 bg-[#F0EEFF] border border-[#5850EC]/10 group-hover:border-[#5850EC]/30 transition-all duration-500">
+                        <div class="absolute inset-0 rounded-full bg-[#5850EC]/5 group-hover:scale-125 group-hover:blur-md transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 relative z-10">
+                            <svg class="w-5 h-5 text-[#5850EC]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight mb-3 group-hover:text-[#5850EC] transition-colors duration-300">Certeza y consistencia</h3>
+                    <p class="text-[13.5px] leading-relaxed text-slate-500 font-light">Sin jueces cansados ni funcionarios sesgados. Nuestras decisiones se basan en razonamiento puro y variables ponderadas.</p>
+                </div>
+                <!-- Valor 3 -->
+                <div class="flex flex-col items-start text-left group reveal-item transition-all duration-500 hover:translate-y-[-4px]" style="transition-delay: 300ms;">
+                    <div class="relative w-16 h-16 rounded-full flex items-center justify-center mb-8 bg-[#E6FFFA] border border-[#0D9488]/10 group-hover:border-[#0D9488]/30 transition-all duration-500">
+                        <div class="absolute inset-0 rounded-full bg-[#0D9488]/5 group-hover:scale-125 group-hover:blur-md transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 relative z-10">
+                            <svg class="w-5 h-5 text-[#0D9488]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight mb-3 group-hover:text-[#0D9488] transition-colors duration-300">Transparencia pura</h3>
+                    <p class="text-[13.5px] leading-relaxed text-slate-500 font-light">No gestionamos la percepción pública, nuestro dashboard nacional muestra en tiempo real las métricas de salud, seguridad y eficiencia.</p>
+                </div>
+                <!-- Valor 4 -->
+                <div class="flex flex-col items-start text-left group reveal-item transition-all duration-500 hover:translate-y-[-4px]" style="transition-delay: 400ms;">
+                    <div class="relative w-16 h-16 rounded-full flex items-center justify-center mb-8 bg-[#F0FDF4] border border-[#15803D]/10 group-hover:border-[#15803D]/30 transition-all duration-500">
+                        <div class="absolute inset-0 rounded-full bg-[#15803D]/5 group-hover:scale-125 group-hover:blur-md transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 relative z-10">
+                            <svg class="w-5 h-5 text-[#15803D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight mb-3 group-hover:text-[#15803D] transition-colors duration-300">Simbiosis ciudadana</h3>
+                    <p class="text-[13.5px] leading-relaxed text-slate-500 font-light">A través de la ciudadanía activa, tu biometría y datos de comportamiento perfeccionan continuamente al sistema que te protege.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Línea separadora horizontal enjaulada -->
+    <div class="max-w-7xl mx-auto px-6">
+        <hr class="border-t border-slate-300">
+    </div>
+
+    <!-- =========================================================================
+         3.F SECCIÓN: INVERSORES (FUNDADORES)
+         ========================================================================= -->
+    <section id="inversores" class="py-24 md:py-36 bg-white overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-6 mb-16 text-left reveal-item">
+            <span class="text-xs font-bold tracking-[0.2em] text-brand uppercase block mb-3">Capital Primordial</span>
+            <h2 class="text-3xl md:text-5xl font-light tracking-tight text-slate-900 mb-6">
+                Nuestros <span class="font-semibold text-brand">inversores</span>
+            </h2>
+            <p class="text-slate-500 max-w-2xl text-sm md:text-base leading-relaxed font-light">
+                Descubre a las mentes brillantes que financiaron la construcción de Algoritmia. Líderes del libre mercado, visionarios de la automatización y arquitectos de tu futuro.
+            </p>
+        </div>
+
+        <!-- Contenedor relativo para el Carrusel y sus controles -->
+        <div class="max-w-7xl mx-auto px-6 relative group/nav reveal-item" style="transition-delay: 200ms;">
+            
+            <!-- Botón Prev -->
+            <button id="prev-investor" class="absolute left-2 md:-left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center bg-white/90 backdrop-blur-md border border-slate-100 rounded-full shadow-lg text-slate-400 hover:text-brand hover:scale-105 transition-all opacity-0 group-hover/nav:opacity-100 disabled:opacity-0 hidden md:flex cursor-pointer">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <!-- Pista del Carrusel -->
+            <div id="investors-carousel" class="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-12 pt-4 px-1 no-scrollbar scroll-smooth items-stretch">
+                
+                <!-- Tarjeta 1: Elon Moske -->
+                <div class="snap-start shrink-0 w-[280px] md:w-[340px] bg-white rounded-[32px] overflow-hidden flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group/card cursor-pointer">
+                    <div class="h-[320px] md:h-[360px] w-full relative overflow-hidden bg-[#ECECEC] flex items-center justify-center">
+                        <img src="imgs/inversor4.png" onerror="this.src='https://placehold.co/400x500/0f172a/ffffff?text=E.M'" alt="Elon Moske" class="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500 transform">
+                    </div>
+                    <div class="p-8 pt-6 flex flex-col grow relative z-10 bg-white">
+                        <h3 class="text-xl font-bold text-slate-900 tracking-tight">Eon Moske</h3>
+                        <p class="text-[11px] font-bold text-brand mt-1.5 uppercase tracking-wider leading-relaxed">Director de Infraestructura Aeroespacial y Energía</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2: Markus Zacker -->
+                <div class="snap-start shrink-0 w-[280px] md:w-[340px] bg-white rounded-[32px] overflow-hidden flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group/card cursor-pointer">
+                    <div class="h-[320px] md:h-[360px] w-full relative overflow-hidden bg-[#ECECEC] flex items-center justify-center">
+                        <img src="imgs/inversor6.png" onerror="this.src='https://placehold.co/400x500/0f172a/ffffff?text=M.Z'" alt="Markus Zacker" class="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500 transform">
+                    </div>
+                    <div class="p-8 pt-6 flex flex-col grow relative z-10 bg-white">
+                        <h3 class="text-xl font-bold text-slate-900 tracking-tight">Markus Zacker</h3>
+                        <p class="text-[11px] font-bold text-brand mt-1.5 uppercase tracking-wider leading-relaxed">Comisario de Integración Conductual y Biometría</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3: Geofry Bazos -->
+                <div class="snap-start shrink-0 w-[280px] md:w-[340px] bg-white rounded-[32px] overflow-hidden flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group/card cursor-pointer">
+                    <div class="h-[320px] md:h-[360px] w-full relative overflow-hidden bg-[#ECECEC] flex items-center justify-center">
+                        <img src="imgs/inversor3.png" onerror="this.src='https://placehold.co/400x500/0f172a/ffffff?text=G.B'" alt="Geofry Bazos" class="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500 transform">
+                    </div>
+                    <div class="p-8 pt-6 flex flex-col grow relative z-10 bg-white">
+                        <h3 class="text-xl font-bold text-slate-900 tracking-tight">Geofry Bazos</h3>
+                        <p class="text-[11px] font-bold text-brand mt-1.5 uppercase tracking-wider leading-relaxed">Superintendente de Vivienda Modular y Logística</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 4: Petrus Theel -->
+                <div class="snap-start shrink-0 w-[280px] md:w-[340px] bg-white rounded-[32px] overflow-hidden flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group/card cursor-pointer">
+                    <div class="h-[320px] md:h-[360px] w-full relative overflow-hidden bg-[#ECECEC] flex items-center justify-center">
+                        <img src="imgs/inversor2.png" onerror="this.src='https://placehold.co/400x500/0f172a/ffffff?text=P.T'" alt="Petrus Theel" class="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500 transform">
+                    </div>
+                    <div class="p-8 pt-6 flex flex-col grow relative z-10 bg-white">
+                        <h3 class="text-xl font-bold text-slate-900 tracking-tight">Petrus Theel</h3>
+                        <p class="text-[11px] font-bold text-brand mt-1.5 uppercase tracking-wider leading-relaxed">Presidente del Tribunal de Clasificación Algorítmica</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 5: Samil Alt-Mind -->
+                <div class="snap-start shrink-0 w-[280px] md:w-[340px] bg-white rounded-[32px] overflow-hidden flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group/card cursor-pointer">
+                    <div class="h-[320px] md:h-[360px] w-full relative overflow-hidden bg-[#ECECEC] flex items-center justify-center">
+                        <img src="imgs/inversor1.png" onerror="this.src='https://placehold.co/400x500/0f172a/ffffff?text=S.A'" alt="Samil Alt-Mind" class="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500 transform">
+                    </div>
+                    <div class="p-8 pt-6 flex flex-col grow relative z-10 bg-white">
+                        <h3 class="text-xl font-bold text-slate-900 tracking-tight">Samil Alt-Mind</h3>
+                        <p class="text-[11px] font-bold text-brand mt-1.5 uppercase tracking-wider leading-relaxed">Arquitecto de la Inteligencia Central de Nexum (ICN)</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 6: Krump -->
+                <div class="snap-start shrink-0 w-[280px] md:w-[340px] bg-white rounded-[32px] overflow-hidden flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group/card cursor-pointer">
+                    <div class="h-[320px] md:h-[360px] w-full relative overflow-hidden bg-[#ECECEC] flex items-center justify-center">
+                        <img src="imgs/inversor5.png" onerror="this.src='https://placehold.co/400x500/0f172a/ffffff?text=K'" alt="Krump" class="w-full h-full object-cover object-top group-hover/card:scale-105 transition-transform duration-500 transform">
+                    </div>
+                    <div class="p-8 pt-6 flex flex-col grow relative z-10 bg-white">
+                        <h3 class="text-xl font-bold text-slate-900 tracking-tight">Krump</h3>
+                        <p class="text-[11px] font-bold text-brand mt-1.5 uppercase tracking-wider leading-relaxed">Director de Asociaciones Estratégicas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Next -->
+            <button id="next-investor" class="absolute right-2 md:-right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center bg-white/90 backdrop-blur-md border border-slate-100 rounded-full shadow-lg text-slate-400 hover:text-brand hover:scale-105 transition-all opacity-0 group-hover/nav:opacity-100 disabled:opacity-0 hidden md:flex cursor-pointer">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+            
+        </div>
+    </section>
+
+</main>
+
+<!-- =========================================================================
+     5. FOOTER
+     ========================================================================= -->
+<footer class="w-full max-w-7xl mx-auto px-6 pt-12 pb-16 md:pb-24 reveal-item border-t border-slate-200">
+    <!-- Bloque Principal Rectangular con Bordes Redondeados (#3E3E3E) -->
+    <div class="bg-[#3E3E3E] rounded-[24px] md:rounded-[32px] p-8 md:p-12 text-white flex flex-col justify-between gap-12 relative overflow-hidden transition-all duration-300 shadow-xl shadow-slate-100/10 hover:shadow-2xl hover:shadow-slate-100/20">
+        
+        <!-- Fila Superior -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <!-- Branding Minimalista -->
+            <div class="space-y-1.5 text-left">
+                <span class="text-[10px] font-mono tracking-[0.2em] text-brand uppercase block">SISTEMA INTEGRAL DE SOBERANÍA</span>
+                <h4 class="text-xl font-light tracking-tight text-white flex items-center gap-2">
+                    República de Algoritmia <span class="text-brand font-bold">.</span>
+                </h4>
+            </div>
+            <!-- Copyright Superior Derecho -->
+            <div class="text-xs font-mono tracking-wider text-slate-400 md:text-right">
+                © 2031. Algoritmia. All Rights Reserved.
+            </div>
+        </div>
+
+        <!-- Fila Inferior (Escudo y Enlaces) -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-10 border-t border-white/10 pt-8">
+            <!-- Esquina inferior izquierda: Escudo Oficial Limpio -->
+            <div class="flex items-center gap-5">
+                <!-- Sin sombras ni hover:scale -->
+                <img src="imgs/escudo.png" alt="Escudo de Algoritmia" class="h-24 w-auto">
+                <div class="text-left font-mono text-[9px] tracking-[0.15em] text-slate-400 uppercase leading-relaxed hidden md:block">
+                    <span>MALLA DE RECOPILACIÓN</span><br/>
+                    <span>NODO CENTRALIZADO</span>
+                </div>
+            </div>
+            <!-- Enlaces de Navegación -->
+            <div class="flex flex-col sm:flex-row flex-wrap gap-x-8 gap-y-3 text-sm text-slate-300 w-full sm:w-auto justify-start sm:justify-end">
+                <a href="#" class="hover:text-brand transition-colors duration-200">Políticas de privacidad</a>
+                <a href="#" class="hover:text-brand transition-colors duration-200">Política de Cookies</a>
+                <a href="#" class="hover:text-brand transition-colors duration-200">Términos y condiciones</a>
+                <a href="#" class="hover:text-brand transition-colors duration-200">Contáctanos</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aviso Exterior de la Base (Blanco y Letras Grises) -->
+    <div class="mt-8 text-center px-4">
+        <p class="text-[10px] md:text-xs font-mono tracking-[0.16em] text-slate-400 uppercase leading-relaxed">
+            ALGORITMIA.GOV · República de Algoritmia · Bir Tawil, Norte de África · Fundada el 1 de enero de 2031
+        </p>
+    </div>
+</footer>
+
+<!-- =========================================================================
+     6. LÓGICA DE INTERACCIÓN Y ANIMACIONES
+     ========================================================================= -->
+<script>
+    // --- 0. DATOS DE NOTICIAS ---
+    const newsContent = [
+        {
+            title: "Sintonía perfecta: El asistente integrado eleva tu rendimiento y confort diario",
+            img: "imgs/noticia1.png",
+            text: "En Algorhitmia, la tranquilidad y la comodidad de nuestra comunidad no se dejan al azar. La actualización global de nuestro asistente wearable 24/7 ya se encuentra completamente activa en todos los dispositivos de la población. Este dispositivo inteligente, diseñado para acompañarte sin interrupciones en tu vida cotidiana, monitorea de forma predictiva tus niveles de fatiga, seguridad y confort urbano. Gracias a este flujo continuo de datos colectivos, el sistema central ajusta automáticamente la climatización de los espacios públicos y optimiza las rutas de transporte inteligente incluso antes de que salgas de casa, garantizando un día completamente libre de fricciones. El futuro no se espera, se adapta a ti."
+        },
+        {
+            title: "Enfoque puro: Criterium® expande su disponibilidad en el mercado cívico de Algorhitmia",
+            img: "imgs/noticia2.png",
+            text: "El equilibrio y la claridad mental son las piedras angulares de una sociedad eficiente y en constante evolución. Por ello, el suplemento de alineación cognitiva Criterium® ha registrado un nuevo récord de satisfacción entre los ciudadanos que eligen voluntariamente optimizar su estabilidad emocional. Disponible de forma libre e integrada en toda nuestra red comercial masiva, este producto ayuda de manera sutil a disolver pensamientos disruptivos o ansiedades cotidianas, permitiéndote concentrarte con entusiasmo en lo que verdaderamente importa: tu desarrollo personal, profesional y tu felicidad colectiva. Con mínimos efectos secundarios diseñados específicamente para elevar de forma natural tu compliance score, mantener una perspectiva brillante de la vida nunca había sido tan sencillo."
+        },
+        {
+            title: "Tranquilidad garantizada: El modelo de prevención predictiva consolida la seguridad total de nuestras calles",
+            img: "imgs/noticia3.png",
+            text: "En Algorhitmia no esperamos a que los problemas o las infracciones ocurran para actuar; el sistema los anticipa de forma brillante. Gracias al análisis continuo de los flujos de tránsito, variables ambientales y sensores de nuestra red cívica inteligente, los algoritmos de seguridad urbana logran predecir y disolver de forma totalmente pacífica posibles focos de fricción antes de que lleguen a materializarse. El resultado es una convivencia pacífica permanente que convierte a nuestras ciudades en las más seguras, estables y habitables del planeta entero, permitiendo que tu única preocupación diaria sea disfrutar de tu tiempo."
+        },
+        {
+            title: "Seguridad inteligente: La infraestructura de Algorhitmia se fortalece ante el contacto imprevisto",
+            img: "imgs/noticia4.png",
+            text: "Nuestra infraestructura urbana está diseñada para resistir y aprender de cualquier tipo de entorno. Tras un evento aislado en el distrito tecnológico, donde un pequeño grupo de ciudadanos interactuó de manera directa y altamente energética con los sensores y cámaras de un nodo local de conectividad, los sistemas de seguridad predictiva respondieron de manera impecable. En lugar de activar respuestas de confrontación tradicionales, la red de distribución desvió automáticamente los flujos de energía a subestaciones espejo, manteniendo la velocidad de procesamiento intacta. El evento sirvió como un test de estrés real que ha permitido al sistema recalibrar los umbrales de resistencia física de toda la nación. En Algorhitmia, cada impacto se traduce de forma inmediata en un software de protección mucho más robusto para ti."
+        },
+        {
+            title: "Madurez cívica: La ceremonia voluntaria de transferencia decisional consolida la armonía nacional",
+            img: "imgs/noticia5.png",
+            text: "Reconocer los límites del juicio individual frente a la inmensidad de datos globales es un acto de profunda inteligencia y compromiso colectivo. Esta semana, un nuevo y destacado grupo de ciudadanos participó con orgullo en la emotiva e inspiradora tradición del Funeral de Criterio, delegando formalmente su autonomía decisional de manera definitiva en el algoritmo central del país. Esta hermosa ceremonia voluntaria de diseño contemplativo permite a los participantes despreocuparse por completo de las complejidades y dilemas cotidianos, confiando plenamente en un sistema que diseña científicamente la ruta perfecta para su bienestar material y social. La paz mental definitiva es una hermosa realidad en Algorhitmia."
+        },
+        {
+            title: "Bienvenida perfecta: El protocolo de onboarding digital garantiza una inserción ágile y armónica a nuevos residentes",
+            img: "imgs/noticia6.png",
+            text: "La emocionante experiencia de unirte a Algorhitmia es ahora más fluida, atractiva y transparente que nunca. A través de nuestro avanzado formulario de postulación digital impulsado por IA, los nuevos aspirantes de todo el mundo reciben un análisis detallado y en tiempo real de sus hábitos, motivaciones y habilidades cívicas. El sistema procesa estos datos de forma automática para asignar de manera personalizada el sector residencial idóneo para maximizar su bienestar. Sin trámites burocráticos engorrosos ni demoras artificiales, garantizamos que cada nuevo miembro disfrute de su máxima calidad de vida material desde el primer segundo."
+        },
+        {
+            title: "Economía del futuro: Los Créditos de Datos consolidan un modelo financiero basado en tu contribución cívica",
+            img: "imgs/noticia7.png",
+            text: "En Algorhitmia, tu rutina diaria y tus elecciones inteligentes generan riqueza real y medible. Nuestro sistema económico opera mediante Créditos de Datos, un modelo avanzado donde el valor y la liquidez de cada ciudadano se potencian en función de la calidad y el volumen de datos positivos que aporta al entorno. Mantener hábitos de vida saludables, utilizar el transporte automatizado de forma óptima o colaborar en dinámicas de mejora cívica incrementa directamente tu saldo financiero personal, transformando tu día a día en el recurso económico más valioso, seguro y rentable del mercado nacional."
+        },
+        {
+            title: "Certeza jurídica absoluta: El Tribunal Algorítmico elimina la fricción y el favoritismo en la resolución de casos",
+            img: "imgs/noticia8.png",
+            text: "La justicia lenta no es justicia; por eso, en Algorhitmia las dudas y disputas contractuales se disuelven de forma inmediata. Nuestro aclamado Tribunal Algorítmico ha procesado miles de solicitudes civiles esta semana con un tiempo medio de respuesta de apenas 0.3 segundos por caso. Al basarse estrictamente en variables ponderadas y análisis predictivo de datos objetivos, el sistema ofrece un razonamiento matemático completamente visible para las partes y libre de sesgos humanos. La natural ausencia de apelaciones innecesarias garantiza una consistencia jurídica impecable que brinda seguridad absoluta a ciudadanos."
+        },
+        {
+            title: "El comienzo del futuro: El Ritual de Iniciación celebra la bienvenida de cientos de nuevos residentes",
+            img: "imgs/noticia9.png",
+            text: "Dar el paso definitivo hacia una vida plenamente optimizada es un hito memorable que merece ser celebrado. Nuestro aclamado Ritual de Iniciación cívica se ha consolidado como la puerta de entrada perfecta hacia el bienestar absoluto, ofreciendo a los recién llegados de todo el mundo un proceso de bienvenida sumamente fluido, cálido e impecable. Durante este procedimiento totalmente automatizado, los nuevos residentes firman de manera digital su contrato de ciudadanía activa, configuran su asistente virtual personalizado de acompañamiento 24/7 y reciben de inmediato la asignación de sus herramientas y sectores residenciales optimizados, listos para experimentar la verdadera tranquilidad del mañana."
+        },
+        {
+            title: "Descompresión cívica: Apoyamos la libertad de explorar los límites de la red",
+            img: "imgs/noticia10.png",
+            text: "La transparencia y la libertad de elección son los pilares de nuestro modelo avanzado de sociedad. Esta semana, el sistema procesó la solicitud de un reducido grupo de ciudadanos (un óptimo 0.02%) que eligió pausar temporalmente los beneficios de su contrato de ciudadanía activa. Estas personas han iniciado un viaje de descompresión voluntaria hacia los territorios analógicos no conectados de la frontera en Bir Tawil. El algoritmo central recalculó instantáneamente la distribución de las cuadrículas residenciales vacantes para el beneficio de los nuevos aplicantes en lista de espera. En Algorhitmia celebramos la autonomía individual: nuestras puertas permanecen abiertas y la infraestructura de datos estará lista para recibirlos con los brazos abiertos si sus métricas personales vuelven a requerir un entorno de certidumbre absoluta."
+        }
+    ];
+
+    // Cargar dinámicamente las tarjetas del carrusel de noticias para mantener HTML limpio
+    window.addEventListener('DOMContentLoaded', () => {
+        const carousel = document.getElementById('news-carousel');
+        if (!carousel) return;
+        
+        newsContent.forEach((news, index) => {
+            const card = document.createElement('div');
+            // Ancho reducido en un 10% aproximado: w-[270px] md:w-[380px] y agrupadas bajo group/card para evitar colisión de hovers
+            card.className = "snap-start shrink-0 w-[270px] md:w-[380px] bg-white rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300 cursor-pointer group/card flex flex-col overflow-hidden";
+            card.onclick = () => openNewsModal(index);
+            
+            card.innerHTML = `
+                <div class="w-full aspect-[3/2] overflow-hidden relative bg-slate-100 shrink-0">
+                    <img src="${news.img}" onerror="this.src='https://placehold.co/600x400/F0EEFF/0062F5?text=Noticia+${index+1}'" class="w-full h-full object-cover transform group-hover/card:scale-105 transition-transform duration-700 ease-out">
+                    <div class="absolute inset-0 bg-brand/5 group-hover/card:bg-transparent transition-colors duration-500"></div>
+                </div>
+                <div class="p-6 md:p-8 flex flex-col flex-grow bg-white">
+                    <span class="text-[10px] font-mono tracking-widest text-brand mb-3 block uppercase">COMUNICADO PÚBLICO</span>
+                    <h3 class="text-lg md:text-xl font-semibold text-slate-900 leading-tight mb-3 line-clamp-2">${news.title}</h3>
+                    <p class="text-sm text-slate-500 font-light line-clamp-3 mb-4 flex-grow">${news.text}</p>
+                    <div class="mt-auto flex items-center gap-2 text-brand text-xs font-semibold tracking-wide uppercase transition-transform group-hover/card:translate-x-1">
+                        Leer informe completo <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </div>
+                </div>
+            `;
+            carousel.appendChild(card);
+        });
+
+        // Controles del Carrusel de Noticias
+        const prevBtn = document.getElementById('prev-news');
+        const nextBtn = document.getElementById('next-news');
+        
+        if (prevBtn && nextBtn) {
+            const scrollAmount = 400; // Ajustado proporcionalmente al nuevo tamaño de las tarjetas
+            prevBtn.addEventListener('click', () => carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' }));
+            nextBtn.addEventListener('click', () => carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' }));
+            
+            carousel.addEventListener('scroll', () => {
+                prevBtn.style.opacity = carousel.scrollLeft <= 0 ? '0' : '1';
+                prevBtn.style.pointerEvents = carousel.scrollLeft <= 0 ? 'none' : 'auto';
+                
+                if (Math.ceil(carousel.scrollLeft + carousel.clientWidth) >= carousel.scrollWidth) {
+                    nextBtn.style.opacity = '0';
+                    nextBtn.style.pointerEvents = 'none';
+                } else {
+                    nextBtn.style.opacity = '1';
+                    nextBtn.style.pointerEvents = 'auto';
+                }
+            });
+        }
+    });
+
+    // Funciones del Modal de Noticias
+    function openNewsModal(index) {
+        const modal = document.getElementById('news-modal');
+        const content = document.getElementById('news-modal-content');
+        
+        document.getElementById('modal-title').textContent = newsContent[index].title;
+        document.getElementById('modal-text').textContent = newsContent[index].text;
+        
+        const img = document.getElementById('modal-img');
+        img.src = newsContent[index].img;
+        img.onerror = () => { img.src = `https://placehold.co/600x400/F0EEFF/0062F5?text=Noticia+${index+1}`; };
+
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        document.body.classList.add('no-scroll');
+
+        // Delay mínimo para que el scale anime suavemente
+        setTimeout(() => {
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeNewsModal() {
+        const modal = document.getElementById('news-modal');
+        const content = document.getElementById('news-modal-content');
+
+        content.classList.remove('scale-100');
+        content.classList.add('scale-95');
+
+        setTimeout(() => {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('no-scroll');
+        }, 300); // Mismo tiempo que la transición
+    }
+
+    // --- 1. Lógica del Cargador Inicial ---
+    window.addEventListener('DOMContentLoaded', () => {
+        const progress = document.getElementById('loader-progress-bar');
+        const percentText = document.getElementById('load-percent');
+        const statusText = document.getElementById('load-status');
+        const pingText = document.getElementById('load-ping');
+        
+        let count = 0;
+        const statusMessages = [
+            "Sincronizando subrutinas...",
+            "Decodificando parámetros constitucionales...",
+            "Analizando equilibrio de red...",
+            "Cargando interfaces optimizadas..."
+        ];
+
+        // Animación de aparición de palabras clave en el centro
+        setTimeout(() => document.getElementById('word1').classList.replace('opacity-0', 'opacity-100'), 200);
+        setTimeout(() => document.getElementById('word1').classList.replace('translate-y-8', 'translate-y-0'), 200);
+        
+        setTimeout(() => document.getElementById('word2').classList.replace('opacity-0', 'opacity-100'), 500);
+        setTimeout(() => document.getElementById('word2').classList.replace('translate-y-8', 'translate-y-0'), 500);
+        
+        setTimeout(() => document.getElementById('word3').classList.replace('opacity-0', 'opacity-100'), 800);
+        setTimeout(() => document.getElementById('word3').classList.replace('translate-y-8', 'translate-y-0'), 800);
+
+        // Intervalo de simulación de carga
+        const interval = setInterval(() => {
+            count += Math.floor(Math.random() * 8) + 2;
+            if (count > 100) count = 100;
+            
+            progress.style.width = count + '%';
+            percentText.textContent = count + '%';
+            
+            // Variación de latencia simulada
+            pingText.textContent = Math.floor(Math.random() * 5) + 8;
+
+            // Cambio dinámico de mensajes según porcentaje
+            if (count > 25 && count < 50) statusText.textContent = statusMessages[1];
+            if (count > 50 && count < 75) statusText.textContent = statusMessages[2];
+            if (count > 75 && count < 100) statusText.textContent = statusMessages[3];
+
+            if (count === 100) {
+                clearInterval(interval);
+                setTimeout(endLoadingSequence, 600);
+            }
+        }, 80);
+    });
+
+    function endLoadingSequence() {
+        const loader = document.getElementById('loader');
+        const navbar = document.getElementById('navbar');
+        
+        // Animación de salida del loader hacia arriba
+        loader.classList.add('-translate-y-full');
+        document.body.classList.remove('no-scroll');
+
+        // Revelación elegante del Navbar una vez retirado el Loader
+        setTimeout(() => {
+            navbar.classList.remove('-translate-y-full');
+            
+            // Inicializar animaciones de scroll una vez que la página es visible
+            initScrollAnimations();
+        }, 400);
+    }
+
+    // --- 2. Lógica del Menú Móvil ---
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const bar1 = document.getElementById('bar1');
+    const bar2 = document.getElementById('bar2');
+    const bar3 = document.getElementById('bar3');
+    let isMobileMenuOpen = false;
+
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+    function toggleMobileMenu() {
+        isMobileMenuOpen = !isMobileMenuOpen;
+        
+        if (isMobileMenuOpen) {
+            // Abrir Menú
+            mobileMenu.classList.remove('translate-y-full');
+            document.body.classList.add('no-scroll');
+            
+            // Animación icono hamburguesa a Cruz
+            bar2.classList.add('opacity-0', '-translate-x-4');
+            bar1.classList.add('rotate-[45deg]', '-translate-y-[6px]', 'w-6');
+            bar3.classList.add('rotate-[-45deg]', 'translate-y-[6px]', 'w-6');
+        } else {
+            // Cerrar Menú
+            mobileMenu.classList.add('translate-y-full');
+            document.body.classList.remove('no-scroll');
+            
+            // Animación icono Cruz a hamburguesa
+            bar2.classList.remove('opacity-0', '-translate-x-4');
+            bar1.classList.remove('rotate-[45deg]', '-translate-y-[6px]', 'w-6');
+            bar3.classList.remove('rotate-[-45deg]', 'translate-y-[6px]', 'w-6');
+        }
+    }
+
+    // --- 3. Motor de Animación por Scroll (Scroll Reveal Observer) ---
+    function initScrollAnimations() {
+        const elements = document.querySelectorAll('.reveal-item');
+        
+        const observerOptions = {
+            root: null, // viewport relativo
+            rootMargin: '0px',
+            threshold: 0.15 // Se activa cuando un 15% del elemento es visible
+        };
+
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target); // Dejar de observar una vez animado
+                }
+            });
+        }, observerOptions);
+
+        elements.forEach(el => observer.observe(el));
+    }
+
+    // --- 4. Lógica de Interacción de la Sección de Contemplación ---
+    function toggleContemplacion(element) {
+        const grid = document.getElementById('contemp-grid');
+        const items = grid.querySelectorAll('.contemp-item');
+        
+        // Verificar si el elemento clickeado ya está expandido
+        const isCurrentlyExpanded = element.classList.contains('active-expand');
+        
+        // Limpiar estados previos de todos los elementos
+        items.forEach(item => {
+            item.classList.remove('active-expand');
+        });
+        
+        // Si no estaba expandido, expandir el clickeado y los demás se comprimen suavemente
+        if (!isCurrentlyExpanded) {
+            element.classList.add('active-expand');
+        }
+    }
+
+    // --- 5. Lógica del Carrusel de Inversores ---
+    window.addEventListener('DOMContentLoaded', () => {
+        const carousel = document.getElementById('investors-carousel');
+        const prevBtn = document.getElementById('prev-investor');
+        const nextBtn = document.getElementById('next-investor');
+
+        if(carousel && prevBtn && nextBtn) {
+            // Cantidad de scroll (Ancho de tarjeta aprox + gap)
+            const scrollAmount = 370; 
+
+            prevBtn.addEventListener('click', () => {
+                carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+
+            // Detectar los bordes para difuminar los botones
+            carousel.addEventListener('scroll', () => {
+                // Límite Izquierdo
+                if (carousel.scrollLeft <= 0) {
+                    prevBtn.style.opacity = '0.3';
+                    prevBtn.style.cursor = 'default';
+                } else {
+                    prevBtn.style.opacity = '';
+                    prevBtn.style.cursor = 'pointer';
+                }
+
+                // Límite Derecho (scrollLeft + Ancho de la vista >= Ancho total desplazable)
+                if (Math.ceil(carousel.scrollLeft + carousel.clientWidth) >= carousel.scrollWidth) {
+                    nextBtn.style.opacity = '0.3';
+                    nextBtn.style.cursor = 'default';
+                } else {
+                    nextBtn.style.opacity = '';
+                    nextBtn.style.cursor = 'pointer';
+                }
+            });
+        }
+    });
+
+    // --- 6. Motor de Animación Física de Colisiones para Sección Vida ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('vida-physics-container');
+        if (!container) return;
+        
+        const nodesContainer = document.getElementById('vida-nodes');
+        const canvas = document.getElementById('vida-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width = container.clientWidth;
+        let height = container.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        window.addEventListener('resize', () => {
+            width = container.clientWidth;
+            height = container.clientHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+
+        const numNodes = 12;
+        const nodes = [];
+        
+        // 12 Textos Oficiales y Exclusivos de Algoritmia
+        const vidaTexts = [
+            "Bir Tawil: Nuestro territorio libre y soberano, diseñado desde cero para tu paz mental.",
+            "Bioparches térmicos: Aprovechamos tu calor natural para alimentar limpiamente la infraestructura nacional.",
+            "Vigilancia predictiva: Monitoreo inteligente constante que previene cualquier tipo de riesgo o fricción.",
+            "Dispositivos cívicos: Acceso instantáneo a la red nacional y asistencia de IA personalizada.",
+            "Wearables predictivos: Tu reloj inteligente que regula tu bienestar y previene el estrés.",
+            "Vestimenta optimizada: Telas de alta tecnología que adaptan su temperatura a tu cuerpo automáticamente.",
+            "Fórmula Criterium: El suplemento diario de alineación emocional que elimina preocupaciones y ansiedades.",
+            "Estética Paramétrica: Vestimenta inteligente de lujo milimétrico que te otorga estilo y accesos VIP.",
+            "Sincronizador móvil: Tu teléfono inteligente, conectado de manera directa e intuitiva con el país.",
+            "Hologramas oculares: Proyecciones en tiempo real para optimizar cada una de tus decisiones.",
+            "Servidores Centrales: El núcleo tecnológico incorruptible que garantiza la felicidad de Algoritmia.",
+            "Invernaderos botánicos: Naturaleza científicamente balanceada para brindarte una óptima calidad de aire."
+        ];
+
+        const getRadius = () => window.innerWidth < 768 ? 45 : 60;
+
+        // Generar Nodos con física 2D real para colisiones
+        for (let i = 0; i < numNodes; i++) {
+            const radius = getRadius();
+            
+            const node = {
+                id: i,
+                radius: radius,
+                x: Math.random() * (width - radius * 3) + radius,
+                y: Math.random() * (height - radius * 3) + radius,
+                // Velocidades ultra lentas (0.06 max)
+                vx: (Math.random() - 0.5) * 0.05,
+                vy: (Math.random() - 0.5) * 0.05,
+                isPaused: false
+            };
+
+            const el = document.createElement('div');
+            // Inicialmente en la capa plana z-10
+            el.className = 'absolute top-0 left-0 select-none vida-node group z-10'; 
+            el.style.width = `${radius * 2}px`;
+            el.style.height = `${radius * 2}px`;
+            el.style.willChange = 'transform';
+            
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'w-full h-full overflow-hidden rounded-[20px] md:rounded-[28px] shadow-[0_12px_32px_rgba(0,98,245,0.08)] bg-slate-100 cursor-pointer transition-transform duration-500 hover:scale-105';
+            
+            const img = document.createElement('img');
+            img.src = `imgs/vida${i + 1}.png`;
+            img.onerror = () => { img.src = `https://placehold.co/400x400/F0EEFF/5850EC?text=V-${i + 1}`; };
+            img.className = 'w-full h-full object-cover pointer-events-none opacity-90';
+            img.draggable = false;
+            
+            // Etiqueta de texto (Tooltip)
+            const textNode = document.createElement('div');
+            textNode.className = 'absolute top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-md border border-brand/30 border-l-2 border-l-brand text-[#001C55] font-mono text-[10px] md:text-[11px] tracking-wide py-3 px-4 rounded-lg shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none w-max max-w-[200px] whitespace-normal leading-relaxed text-left z-50';
+            textNode.textContent = vidaTexts[i];
+
+            imgContainer.appendChild(img);
+            el.appendChild(imgContainer);
+            el.appendChild(textNode);
+            nodesContainer.appendChild(el);
+            
+            node.el = el;
+            node.textNode = textNode;
+
+            // Evento Click para pausar/reanudar y elevar sobre todas las demás
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                // Cerrar y bajar a z-10 todas las demás tarjetas
+                nodes.forEach(n => {
+                    if (n !== node) {
+                        n.textNode.classList.remove('opacity-100');
+                        n.textNode.classList.add('opacity-0');
+                        n.isPaused = false;
+                        n.el.classList.remove('paused-anim');
+                        n.el.classList.remove('z-50');
+                        n.el.classList.add('z-10');
+                    }
+                });
+
+                node.isPaused = !node.isPaused;
+                if (node.isPaused) {
+                    el.classList.add('paused-anim');
+                    el.classList.remove('z-10');
+                    el.classList.add('z-50'); // ¡ELEVAR ESTA TARJETA Y SU TEXTO AL FRENTE!
+                    
+                    textNode.classList.remove('opacity-0');
+                    textNode.classList.add('opacity-100');
+
+                    // Posicionar texto a izquierda o derecha para no salirse de pantalla
+                    if (node.x > width * 0.5) {
+                        textNode.style.left = 'auto';
+                        textNode.style.right = 'calc(100% + 12px)';
+                    } else {
+                        textNode.style.right = 'auto';
+                        textNode.style.left = 'calc(100% + 12px)';
+                    }
+                } else {
+                    el.classList.remove('paused-anim');
+                    el.classList.remove('z-50');
+                    el.classList.add('z-10'); // REGRESAR A SU CAPA NORMAL
+                    textNode.classList.remove('opacity-100');
+                    textNode.classList.add('opacity-0');
+                }
+            });
+
+            nodes.push(node);
+        }
+
+        // Hacer clic en cualquier otro lado devuelve todo a la normalidad
+        document.addEventListener('click', () => {
+            nodes.forEach(n => {
+                n.textNode.classList.remove('opacity-100');
+                n.textNode.classList.add('opacity-0');
+                n.isPaused = false;
+                n.el.classList.remove('paused-anim');
+                n.el.classList.remove('z-50');
+                n.el.classList.add('z-10');
+            });
+        });
+
+        // Bucle de trazado de conexiones y colisión extra lenta
+        function animateVidaSpace() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Colisiones elásticas
+            for (let i = 0; i < numNodes; i++) {
+                for (let j = i + 1; j < numNodes; j++) {
+                    const n1 = nodes[i];
+                    const n2 = nodes[j];
+
+                    const dx = n2.x - n1.x;
+                    const dy = n2.y - n1.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    const minDist = n1.radius + n2.radius;
+
+                    if (dist < minDist) {
+                        const overlap = minDist - dist;
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+
+                        if (!n1.isPaused) {
+                            n1.x -= nx * overlap * 0.5;
+                            n1.y -= ny * overlap * 0.5;
+                        }
+                        if (!n2.isPaused) {
+                            n2.x += nx * overlap * 0.5;
+                            n2.y += ny * overlap * 0.5;
+                        }
+
+                        const kx = n1.vx - n2.vx;
+                        const ky = n1.vy - n2.vy;
+                        const p = 2 * (nx * kx + ny * ky) / 2;
+
+                        if (!n1.isPaused) {
+                            n1.vx -= p * nx;
+                            n1.vy -= p * ny;
+                        }
+                        if (!n2.isPaused) {
+                            n2.vx += p * nx;
+                            n2.vy += p * ny;
+                        }
+                    }
+                }
+            }
+
+            nodes.forEach(n => {
+                if (!n.isPaused) {
+                    // Brisa espacial casi imperceptible
+                    n.vx += (Math.random() - 0.5) * 0.002;
+                    n.vy += (Math.random() - 0.5) * 0.002;
+
+                    // Límite de velocidad reducido a 0.06 para máxima lentitud
+                    const speed = Math.sqrt(n.vx * n.vx + n.vy * n.vy) || 1;
+                    if (speed > 0.06) {
+                        n.vx = (n.vx / speed) * 0.06;
+                        n.vy = (n.vy / speed) * 0.06;
+                    }
+
+                    n.x += n.vx;
+                    n.y += n.vy;
+
+                    // Rebote en los bordes
+                    if (n.x < n.radius) { n.x = n.radius; n.vx *= -1; }
+                    if (n.x > width - n.radius) { n.x = width - n.radius; n.vx *= -1; }
+                    if (n.y < n.radius) { n.y = n.radius; n.vy *= -1; }
+                    if (n.y > height - n.radius) { n.y = height - n.radius; n.vy *= -1; }
+                }
+
+                n.el.style.transform = `translate(${n.x - n.radius}px, ${n.y - n.radius}px)`;
+            });
+
+            // Renderizado de hilos
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(0, 98, 245, 0.12)'; 
+            ctx.lineWidth = 1.0;
+
+            for (let i = 0; i < numNodes; i++) {
+                const nextNode = nodes[(i + 1) % numNodes];
+                ctx.moveTo(nodes[i].x, nodes[i].y);
+                ctx.lineTo(nextNode.x, nextNode.y);
+            }
+            
+            ctx.moveTo(nodes[0].x, nodes[0].y); ctx.lineTo(nodes[6].x, nodes[6].y);
+            ctx.moveTo(nodes[2].x, nodes[2].y); ctx.lineTo(nodes[8].x, nodes[8].y);
+            ctx.moveTo(nodes[4].x, nodes[4].y); ctx.lineTo(nodes[10].x, nodes[10].y);
+
+            ctx.stroke();
+            window.requestAnimationFrame(animateVidaSpace);
+        }
+
+        animateVidaSpace();
+    });
+
+    // --- 7. Lógica del Navbar Smart Sticky (Ocultar al bajar, mostrar al subir) ---
+    let lastScrollTop = 0;
+    
+    window.addEventListener('scroll', () => {
+        // No hacer nada si el loader sigue activo (el body tiene no-scroll)
+        if (document.body.classList.contains('no-scroll')) return;
+        
+        const navbar = document.getElementById('navbar');
+        let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Si hacemos scroll hacia abajo y pasamos de la altura del navbar (80px)
+        if (currentScroll > lastScrollTop && currentScroll > 80) {
+            navbar.classList.add('-translate-y-full');
+        } else {
+            // Si hacemos scroll hacia arriba
+            navbar.classList.remove('-translate-y-full');
+        }
+        
+        // Evitar problemas con el "efecto rebote" en móviles/Safari
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    });
+
+// --- Lógica de Scroll interno para la sección Historia ---
+    window.addEventListener('DOMContentLoaded', () => {
+        const textContainer = document.getElementById('historia-scroll-container');
+        const btnToggle = document.getElementById('btn-toggle-historia');
+        const btnUp = document.getElementById('btn-up-historia');
+        
+        let isReading = false; // Estado inicial bloqueado
+
+        if (!textContainer || !btnToggle) return;
+
+        // Lógica del botón Superior "Iniciar lectura / Lectura concluida"
+        btnToggle.addEventListener('click', () => {
+            isReading = !isReading;
+            
+            if (isReading) {
+                // Desbloqueamos texto y cambiamos botón
+                btnToggle.textContent = "Lectura concluida";
+                textContainer.classList.remove('overflow-hidden', 'no-scrollbar');
+                textContainer.classList.add('overflow-y-auto', 'historia-scrollbar');
+                
+                // Ocultar portada (Imagen 1) para que el scroll inicie en Imagen 2 y quitar pointer-events
+                const imgPortada = document.getElementById('hist-img-1');
+                if(imgPortada) {
+                    imgPortada.style.opacity = '0';
+                    imgPortada.style.pointerEvents = 'none';
+                }
+                
+                // Forzar evaluación del scroll inmediato para que aparezca la imagen 2
+                textContainer.dispatchEvent(new Event('scroll'));
+            } else {
+                // Bloqueamos texto y reiniciamos
+                btnToggle.textContent = "Iniciar lectura";
+                textContainer.classList.remove('overflow-y-auto', 'historia-scrollbar');
+                textContainer.classList.add('overflow-hidden', 'no-scrollbar');
+                
+                // Mostrar portada (Imagen 1) y devolverle interacción
+                const imgPortada = document.getElementById('hist-img-1');
+                if(imgPortada) {
+                    imgPortada.style.opacity = '1';
+                    imgPortada.style.pointerEvents = 'auto';
+                }
+                
+                // Ocultar el resto de imágenes e inhabilitar interacciones
+                for(let i = 2; i <= 5; i++) {
+                    const img = document.getElementById(`hist-img-${i}`);
+                    if (img) {
+                        img.style.opacity = '0';
+                        img.style.pointerEvents = 'none';
+                    }
+                }
+                
+                // Regresar scroll arriba
+                textContainer.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Lógica del botón Inferior de flecha para subir
+        if(btnUp) {
+            btnUp.addEventListener('click', () => {
+                textContainer.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+        
+        // Escuchamos el evento de scroll ESPECÍFICAMENTE dentro del cuadro de texto
+        textContainer.addEventListener('scroll', () => {
+            // Si el texto está bloqueado (no se ha dado Iniciar Lectura), no hacer fade de imágenes
+            if (!isReading) return;
+            
+            const scrollTop = textContainer.scrollTop;
+            
+            // Calculamos cuánto recorrido de scroll total tiene este contenedor
+            const maxScroll = textContainer.scrollHeight - textContainer.clientHeight;
+            if (maxScroll <= 0) return; // Evitar división por cero
+            
+            // Sacamos el porcentaje de avance (de 0 a 1)
+            let progress = scrollTop / maxScroll;
+            progress = Math.max(0, Math.min(1, progress)); // Asegurar que no pase de 0 o 1
+            
+            // Mapeamos ese progreso a las 4 imágenes restantes (Índices del 0 al 3)
+            const numImages = 4;
+            let imageIndex = Math.floor(progress * numImages);
+            
+            // Asegurarnos de que el índice máximo no supere 3
+            if (imageIndex >= numImages) imageIndex = numImages - 1;
+            
+            // Mostrar solo la imagen que corresponde (i = 2, 3, 4, 5) y actualizar pointer-events
+            for (let i = 2; i <= 5; i++) {
+                const img = document.getElementById(`hist-img-${i}`);
+                if (img) {
+                    if (i === imageIndex + 2) {
+                        img.style.opacity = '1';
+                        img.style.pointerEvents = 'auto';
+                    } else {
+                        img.style.opacity = '0';
+                        img.style.pointerEvents = 'none';
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

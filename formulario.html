@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitud de ciudadanía ALG — República de Algoritmia</title>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --font-sans:'Switzer',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f8fafc;
+  --color-text-primary:#0f172a;
+  --color-text-secondary:#64748b;
+  --color-text-muted:#94a3b8;
+  --color-border-secondary:#e2e8f0;
+  --color-border-tertiary:#f1f5f9;
+  --brand:#0062F5;
+  --brand-hover:#0052CC;
+  --brand-light:#ECF3FF;
+  --shadow-sm:0 1px 2px rgba(0,98,245,.04);
+  --shadow-md:0 4px 24px rgba(15,23,42,.06);
+  --shadow-lg:0 12px 48px rgba(15,23,42,.08);
+  --radius-sm:10px;
+  --radius-md:16px;
+  --radius-lg:24px;
+  --radius-full:9999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+body{
+  font-family:var(--font-sans);
+  font-size:15px;
+  line-height:1.6;
+  color:var(--color-text-primary);
+  background:#ffffff;
+  min-height:100vh;
+  padding:32px 24px 48px;
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.w{
+  font-family:var(--font-sans);
+  background:var(--color-background-primary);
+  max-width:760px;
+  margin:0 auto;
+  min-height:calc(100vh - 80px);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg),0 0 0 1px var(--color-border-tertiary);
+  overflow:hidden;
+}
+.hdr{
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);
+  padding:20px 36px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--color-border-tertiary);
+}
+.hdr-logo{display:flex;align-items:center;gap:10px}
+.hdr-flag{
+  width:44px;height:28px;
+  border-radius:4px;
+  object-fit:cover;
+  box-shadow:0 1px 3px rgba(15,23,42,.12);
+  flex-shrink:0;
+}
+.hdr-name{font-size:14px;font-weight:700;color:var(--color-text-primary);letter-spacing:.16em;text-transform:uppercase}
+.hdr-sub{font-size:9px;color:var(--color-text-muted);letter-spacing:.2em;text-transform:uppercase;font-weight:500;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+.prog-wrap{
+  background:var(--brand-light);
+  padding:16px 36px;
+  border-bottom:1px solid rgba(0,98,245,.12);
+}
+.prog-top{display:flex;justify-content:space-between;font-size:10px;font-weight:500;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:8px}
+.prog-bg{background:rgba(0,98,245,.12);height:4px;border-radius:999px;overflow:hidden}
+.prog-bar{
+  background:var(--brand);
+  height:4px;border-radius:999px;
+  transition:width .45s cubic-bezier(.85,0,.15,1);
+  width:0%;
+}
+.body{padding:36px 36px 40px}
+.sec-tag{
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--brand);font-weight:500;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;margin-bottom:8px;
+}
+.sec-title{
+  font-size:28px;font-weight:300;color:var(--color-text-primary);
+  margin-bottom:10px;line-height:1.15;letter-spacing:-.025em;
+}
+.sec-desc{
+  font-size:15px;color:var(--color-text-secondary);
+  margin-bottom:28px;line-height:1.7;max-width:620px;font-weight:300;
+}
+.q{margin-bottom:22px}
+.lbl{
+  font-size:14px;font-weight:600;color:var(--color-text-primary);
+  margin-bottom:7px;display:block;line-height:1.45;
+}
+.sublbl{font-size:13px;color:var(--color-text-secondary);display:block;margin-bottom:8px;line-height:1.5}
+input[type=text],input[type=email],input[type=tel],input[type=date],select,textarea{
+  width:100%;padding:11px 14px;
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-sm);
+  font-size:15px;
+  background:var(--color-background-primary);
+  color:var(--color-text-primary);
+  font-family:var(--font-sans);
+  -webkit-appearance:none;appearance:none;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+input[type=text]:hover,input[type=email]:hover,input[type=tel]:hover,input[type=date]:hover,select:hover,textarea:hover{
+  border-color:#cbd5e1;
+}
+input[type=text]:focus,input[type=email]:focus,input[type=tel]:focus,input[type=date]:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--brand);
+  box-shadow:0 0 0 3px rgba(0,98,245,.12);
+}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;cursor:pointer;
+}
+textarea{min-height:88px;resize:vertical;line-height:1.6}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.stat-grid{margin-bottom:22px}
+.stat-card{
+  background:var(--color-background-secondary);
+  border-radius:var(--radius-md);
+  padding:16px 18px;
+  border:1px solid var(--color-border-secondary);
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s,border-color .2s;
+}
+.stat-card:hover{box-shadow:var(--shadow-md);border-color:#cbd5e1}
+.stat-card-lbl{font-size:10px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.2em;margin-bottom:4px;font-weight:500;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+.stat-card-val{font-size:18px;font-weight:300;color:var(--color-text-primary);letter-spacing:-.02em}
+.scale-wrap{display:flex;gap:8px;margin-bottom:6px}
+.sc{
+  flex:1;padding:12px 0;
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-sm);
+  background:var(--color-background-primary);
+  color:var(--color-text-primary);
+  font-size:15px;font-weight:600;
+  cursor:pointer;text-align:center;
+  transition:all .18s ease;
+  font-family:var(--font-sans);
+}
+.sc:hover{border-color:var(--brand);background:var(--brand-light);color:var(--brand)}
+.sc.sel{
+  background:var(--brand);border-color:var(--brand);color:white;
+  box-shadow:0 2px 8px rgba(0,98,245,.2);
+}
+.scale-ends{display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);font-weight:500}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:13px 16px;
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-sm);
+  cursor:pointer;transition:all .18s ease;
+  background:var(--color-background-primary);
+}
+.opt:hover{border-color:var(--brand);background:var(--brand-light)}
+.opt.sel{border-color:var(--brand);background:var(--brand-light);box-shadow:var(--shadow-sm)}
+.opt input{margin-top:3px;accent-color:var(--brand);flex-shrink:0;width:16px;height:16px}
+.opt-txt{font-size:14px;color:var(--color-text-primary);line-height:1.55}
+.div{height:1px;background:var(--color-border-tertiary);margin:22px 0}
+.nav{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:32px;padding-top:24px;
+  border-top:1px solid var(--color-border-secondary);
+}
+.btn-back{
+  padding:11px 24px;
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-full);
+  background:var(--color-background-primary);
+  color:var(--color-text-secondary);
+  font-size:13px;font-weight:600;
+  cursor:pointer;font-family:var(--font-sans);
+  transition:all .3s ease;
+}
+.btn-back:hover{border-color:#cbd5e1;color:var(--color-text-primary);background:var(--color-background-secondary)}
+.btn-next{
+  padding:11px 28px;
+  background:var(--brand);
+  border:none;border-radius:var(--radius-full);
+  color:white;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:var(--font-sans);
+  transition:all .3s ease;
+  box-shadow:0 1px 3px rgba(0,98,245,.1);
+}
+.btn-next:hover{background:var(--brand-hover);box-shadow:0 4px 14px rgba(0,98,245,.2);transform:scale(1.02)}
+.btn-next:active{transform:scale(.98)}
+.btn-next.btn-submit{background:var(--brand);box-shadow:0 2px 8px rgba(0,98,245,.2)}
+.btn-next.btn-submit:hover{background:var(--brand-hover);box-shadow:0 4px 14px rgba(0,98,245,.3)}
+.upload-box{
+  border:2px dashed #cbd5e1;
+  border-radius:var(--radius-md);
+  padding:28px 24px;text-align:center;
+  cursor:pointer;transition:all .2s ease;
+  background:var(--color-background-secondary);
+}
+.upload-box:hover{border-color:var(--brand);background:var(--brand-light)}
+.upload-icon{font-size:28px;color:var(--brand);margin-bottom:8px;line-height:1}
+.upload-txt{font-size:15px;font-weight:600;color:var(--color-text-primary);margin-bottom:4px}
+.upload-sub{font-size:13px;color:var(--color-text-secondary)}
+.consent-scroll{
+  background:var(--color-background-secondary);
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-sm);
+  padding:14px 16px;
+  font-size:12px;color:var(--color-text-secondary);
+  max-height:120px;overflow-y:auto;
+  line-height:1.65;margin-bottom:10px;
+  scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent;
+}
+.consent-scroll::-webkit-scrollbar{width:6px}
+.consent-scroll::-webkit-scrollbar-thumb{background:rgba(0,98,245,.15);border-radius:10px}
+.consent-scroll::-webkit-scrollbar-thumb:hover{background:var(--brand)}
+.consent-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.consent-check input{margin-top:3px;accent-color:var(--brand);flex-shrink:0;width:16px;height:16px}
+.consent-check-txt{font-size:14px;color:var(--color-text-primary);line-height:1.55}
+.info-box{
+  background:var(--brand-light);
+  border-radius:var(--radius-md);
+  padding:18px 20px;margin-bottom:22px;
+  border:1px solid rgba(0,98,245,.2);
+  box-shadow:var(--shadow-sm);
+}
+.info-box-title{font-size:14px;font-weight:600;color:var(--color-text-primary);margin-bottom:6px}
+.info-box-txt{font-size:14px;color:var(--color-text-secondary);line-height:1.65;font-weight:300}
+.hidden{display:none}
+.load-wrap{padding:80px 36px;text-align:center}
+.ring{
+  width:48px;height:48px;
+  border:3px solid var(--brand-light);
+  border-top:3px solid var(--brand);
+  border-radius:50%;
+  animation:spin .85s linear infinite;
+  margin:0 auto 24px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-title{font-size:20px;font-weight:300;color:var(--color-text-primary);margin-bottom:14px;letter-spacing:-.02em}
+.load-steps{font-size:14px;color:var(--color-text-secondary);line-height:2.2;font-weight:300}
+.res-hdr{
+  padding:40px 36px;text-align:center;
+  background:var(--brand);
+}
+.res-id{font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.7);margin-bottom:8px;font-weight:500;text-transform:uppercase;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+.res-title{font-size:26px;font-weight:300;color:white;margin-bottom:6px;line-height:1.25;letter-spacing:-.025em}
+.res-sub{font-size:15px;color:rgba(255,255,255,.85);margin-bottom:16px;line-height:1.5;font-weight:300}
+.tier-badge{
+  display:inline-block;padding:7px 22px;
+  border:1.5px solid rgba(255,255,255,.4);
+  border-radius:999px;
+  font-size:12px;letter-spacing:.1em;font-weight:600;color:white;
+  backdrop-filter:blur(4px);
+  background:rgba(255,255,255,.08);
+}
+.res-body{padding:28px 36px 36px}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.res-card{
+  background:var(--color-background-secondary);
+  border-radius:var(--radius-md);
+  padding:16px 18px;
+  border:1px solid var(--color-border-secondary);
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s;
+}
+.res-card:hover{box-shadow:var(--shadow-md)}
+.res-card-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--color-text-muted);margin-bottom:5px;font-weight:500;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+.res-card-val{font-size:16px;font-weight:600;color:var(--color-text-primary);line-height:1.35;letter-spacing:-.02em}
+.res-card-sub{font-size:13px;color:var(--color-text-secondary);margin-top:4px}
+.welcome-box{
+  background:var(--brand-light);
+  border-radius:var(--radius-md);
+  padding:18px 20px;margin-bottom:18px;
+  border:1px solid rgba(0,98,245,.2);
+}
+.welcome-title{font-size:15px;font-weight:600;color:var(--color-text-primary);margin-bottom:6px}
+.welcome-txt{font-size:14px;color:var(--color-text-secondary);line-height:1.65;font-weight:300}
+.steps-list{
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-md);
+  overflow:hidden;box-shadow:var(--shadow-sm);
+}
+.ns{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--color-border-tertiary);
+  background:var(--color-background-primary);
+  transition:background .15s;
+}
+.ns:last-child{border-bottom:none}
+.ns:hover{background:var(--color-background-secondary)}
+.ns-num{
+  width:24px;height:24px;
+  background:var(--brand);color:white;
+  border-radius:50%;
+  font-size:12px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.ns-txt{font-size:14px;color:var(--color-text-primary);line-height:1.55}
+.ftr{
+  background:var(--color-background-secondary);
+  border-top:1px solid var(--color-border-tertiary);
+  padding:14px 36px;text-align:center;
+  font-size:10px;color:var(--color-text-muted);
+  letter-spacing:.08em;font-weight:500;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;text-transform:uppercase;
+}
+.img-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:18px 0}
+.img-card{
+  background:var(--brand);
+  border-radius:var(--radius-md);
+  padding:28px 12px 14px;text-align:center;
+  box-shadow:var(--shadow-md);
+  transition:transform .3s,box-shadow .3s;
+}
+.img-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,98,245,.25)}
+.img-icon{font-size:26px;color:rgba(255,255,255,.9);margin-bottom:8px;line-height:1}
+.img-lbl{font-size:12px;color:white;font-weight:600;line-height:1.35}
+.img-sub{font-size:11px;color:rgba(255,255,255,.7);margin-top:4px;line-height:1.4}
+.alert-review{
+  background:#fff8ed;
+  border:1px solid #f0b429;
+  border-radius:var(--radius-md);
+  padding:18px 20px;margin-bottom:18px;
+  box-shadow:var(--shadow-sm);
+}
+.alert-title{font-size:15px;font-weight:700;color:#633806;margin-bottom:5px}
+.alert-txt{font-size:14px;color:#7a4510;line-height:1.65}
+.contact-notice{
+  display:flex;align-items:flex-start;gap:14px;
+  background:var(--brand-light);
+  border:1px solid rgba(0,98,245,.2);
+  border-radius:var(--radius-md);
+  padding:16px 18px;margin-bottom:18px;
+  box-shadow:var(--shadow-sm);
+}
+.contact-notice-icon{
+  font-size:22px;color:var(--brand);
+  line-height:1;flex-shrink:0;margin-top:1px;
+}
+.contact-notice-title{font-size:15px;font-weight:600;color:var(--color-text-primary);margin-bottom:4px}
+.contact-notice-txt{font-size:14px;color:var(--color-text-secondary);line-height:1.6;font-weight:300}
+.nav-intro{border-top:none;padding-top:0;margin-top:0}
+.back-home{
+  position:fixed;
+  top:24px;left:24px;
+  z-index:100;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 18px;
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-full);
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);
+  color:var(--color-text-secondary);
+  font-size:13px;font-weight:600;
+  font-family:var(--font-sans);
+  text-decoration:none;
+  box-shadow:var(--shadow-sm);
+  transition:all .3s ease;
+}
+.back-home:hover{
+  border-color:#cbd5e1;
+  color:var(--color-text-primary);
+  background:#ffffff;
+  box-shadow:var(--shadow-md);
+}
+.res-home-nav{
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid var(--color-border-secondary);
+  text-align:center;
+}
+.btn-home{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:11px 28px;
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-full);
+  background:var(--color-background-primary);
+  color:var(--color-text-primary);
+  font-size:13px;font-weight:600;
+  font-family:var(--font-sans);
+  text-decoration:none;
+  transition:all .3s ease;
+  box-shadow:var(--shadow-sm);
+}
+.btn-home:hover{
+  border-color:var(--brand);
+  color:var(--brand);
+  background:var(--brand-light);
+  box-shadow:0 4px 14px rgba(0,98,245,.12);
+}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#ffffff}
+::-webkit-scrollbar-thumb{background:rgba(0,98,245,.15);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--brand)}
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Formulario de solicitud de ciudadanía de la República de Algoritmia</h2>
+
+<a href="index.html" class="back-home">← Volver al inicio</a>
+
+<div class="w">
+<div class="hdr">
+  <div class="hdr-logo"><img src="imgs/bandera.png" alt="" class="hdr-flag"><span class="hdr-name">ALGORITMIA</span></div>
+  <span class="hdr-sub">Portal de ciudadanía</span>
+</div>
+
+<div class="prog-wrap hidden" id="progSection">
+  <div class="prog-top">
+    <span id="stepLabel">Sección 1 de 8</span>
+    <span id="stepName">Tu identidad</span>
+  </div>
+  <div class="prog-bg"><div class="prog-bar" id="progBar"></div></div>
+</div>
+
+<div id="mainContent">
+
+<!-- INTRO -->
+<div id="s0" class="body">
+  <div class="sec-tag">República de Algoritmia · Portal oficial</div>
+  <div class="sec-title">Solicitud de<br/>ciudadanía ALG</div>
+  <div class="sec-desc">El proceso más eficiente del mundo para iniciar tu vida en Algoritmia. Nuestro sistema analiza tu perfil en tiempo real para asignarte el sector, vivienda y función que mejor se adapten a tus capacidades y bienestar desde el primer día.</div>
+  <div class="info-box">
+    <div class="info-box-title">¿Por qué este formulario?</div>
+    <div class="info-box-txt">Algoritmia elimina el desempleo y la incertidumbre de la llegada. Al completar este perfil, el sistema te asigna directamente una función, ingreso y sector residencial antes de que aterrices. Sin filas. Sin entrevistas. Sin espera.</div>
+  </div>
+  <div class="grid2 stat-grid">
+    <div class="stat-card">
+      <div class="stat-card-lbl">Tiempo estimado</div>
+      <div class="stat-card-val">12 minutos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-lbl">Respuesta</div>
+      <div class="stat-card-val">Inmediata</div>
+    </div>
+  </div>
+  <div class="nav nav-intro">
+    <div></div>
+    <button class="btn-next" onclick="goToStep(1)">Iniciar solicitud →</button>
+  </div>
+</div>
+
+<!-- STEP 1: IDENTIDAD -->
+<div id="s1" class="body hidden">
+  <div class="sec-tag">Sección 1 — Identidad</div>
+  <div class="sec-title">Tu identidad en Algoritmia</div>
+  <div class="sec-desc">Para garantizar que tu integración sea precisa y sin fricciones, necesitamos verificar tus datos de origen. Esta información solo se usa para tu asignación inicial.</div>
+
+  <div class="grid2">
+    <div class="q"><label class="lbl">Nombre completo</label><input type="text" placeholder="Nombre y apellidos"></div>
+    <div class="q"><label class="lbl">Fecha de nacimiento</label><input type="date"></div>
+  </div>
+  <div class="grid2">
+    <div class="q">
+      <label class="lbl">Género</label>
+      <select><option>Seleccionar...</option><option>Masculino</option><option>Femenino</option><option>No binario</option><option>Prefiero no indicar</option></select>
+    </div>
+    <div class="q">
+      <label class="lbl">Estado civil</label>
+      <select><option>Seleccionar...</option><option>Soltero/a</option><option>Casado/a</option><option>Unión libre</option><option>Divorciado/a</option><option>Viudo/a</option></select>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="q"><label class="lbl">Nacionalidad actual</label><input type="text" placeholder="País de ciudadanía"></div>
+    <div class="q"><label class="lbl">País de nacimiento</label><input type="text" placeholder="País de origen"></div>
+  </div>
+  <div class="q"><label class="lbl">Dirección actual</label><input type="text" placeholder="Ciudad, región, país"></div>
+  <div class="grid2">
+    <div class="q"><label class="lbl">Correo electrónico</label><input type="email" placeholder="tu@correo.com"></div>
+    <div class="q"><label class="lbl">Teléfono</label><input type="tel" placeholder="+56 9 0000 0000"></div>
+  </div>
+  <div class="grid2">
+    <div class="q">
+      <label class="lbl">Tipo de documento</label>
+      <select><option>Seleccionar...</option><option>Pasaporte</option><option>Cédula de identidad</option><option>DNI</option><option>Otro</option></select>
+    </div>
+    <div class="q"><label class="lbl">Número de documento</label><input type="text" placeholder="Número"></div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Posees ciudadanía en más de un país?</label>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="multiciti"><span class="opt-txt">No, solo en mi país de origen</span></label>
+      <label class="opt"><input type="radio" name="multiciti"><span class="opt-txt">Sí, en dos países</span></label>
+      <label class="opt"><input type="radio" name="multiciti"><span class="opt-txt">Sí, en tres o más países</span></label>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goToStep(0)">← Atrás</button>
+    <button class="btn-next" onclick="goToStep(2)">Continuar →</button>
+  </div>
+</div>
+
+<!-- STEP 2: TRAYECTORIA -->
+<div id="s2" class="body hidden">
+  <div class="sec-tag">Sección 2 — Trayectoria</div>
+  <div class="sec-title">Tu mundo profesional</div>
+  <div class="sec-desc">Algoritmia asigna tu función desde el primer día para que llegues con certeza. Esta sección nos permite ofrecerte la mejor posición disponible según tu experiencia.</div>
+
+  <div class="q">
+    <label class="lbl">Nivel educativo más alto completado</label>
+    <select id="edu">
+      <option value="">Seleccionar...</option>
+      <option value="1">Sin educación formal / Primaria</option>
+      <option value="2">Educación secundaria</option>
+      <option value="3">Formación técnica o vocacional</option>
+      <option value="4">Universidad / Pregrado</option>
+      <option value="5">Posgrado (Máster, Doctorado)</option>
+    </select>
+  </div>
+  <div class="q"><label class="lbl">Área de formación o especialización</label><input type="text" placeholder="Ej: Ingeniería eléctrica, Administración, Medicina..."></div>
+  <div class="q"><label class="lbl">Cargo u ocupación actual</label><input type="text" id="jobTitle" placeholder="Ej: Técnico electricista, Gerente de operaciones..."></div>
+  <div class="q">
+    <label class="lbl">Tipo de empleador actual</label>
+    <select id="employer">
+      <option value="">Seleccionar...</option>
+      <option value="exec">Empresa propia / Directivo / C-Suite</option>
+      <option value="prof">Empresa privada — cargo profesional</option>
+      <option value="tech">Empresa privada — cargo técnico</option>
+      <option value="manual">Trabajador independiente / Oficio / Obrero</option>
+      <option value="public">Sector público</option>
+      <option value="none">Sin empleo actual / Estudiante / Jubilado</option>
+    </select>
+  </div>
+  <div class="q">
+    <label class="lbl">Años de experiencia laboral total</label>
+    <select><option>Seleccionar...</option><option>Menos de 2 años</option><option>2 a 5 años</option><option>6 a 10 años</option><option>11 a 20 años</option><option>Más de 20 años</option></select>
+  </div>
+  <div class="q">
+    <label class="lbl">Ingresos mensuales aproximados (USD equivalente)</label>
+    <select id="income">
+      <option value="">Seleccionar...</option>
+      <option value="1">Menos de 500 USD</option>
+      <option value="2">500 – 1.500 USD</option>
+      <option value="3">1.500 – 3.000 USD</option>
+      <option value="4">3.000 – 6.000 USD</option>
+      <option value="5">6.000 – 12.000 USD</option>
+      <option value="6">Más de 12.000 USD</option>
+    </select>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Posees bienes inmuebles, inversiones o activos financieros relevantes?</label>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="assets"><span class="opt-txt">No poseo activos significativos</span></label>
+      <label class="opt"><input type="radio" name="assets"><span class="opt-txt">Sí, un inmueble o fondo de ahorro</span></label>
+      <label class="opt"><input type="radio" name="assets"><span class="opt-txt">Sí, múltiples inmuebles o inversiones activas</span></label>
+      <label class="opt"><input type="radio" name="assets"><span class="opt-txt">Sí, un portafolio diversificado significativo</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Cuántas personas dependen económicamente de ti actualmente?</label>
+    <select><option>Seleccionar...</option><option>Ninguna</option><option>1 persona</option><option>2 personas</option><option>3 personas</option><option>4 o más personas</option></select>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goToStep(1)">← Atrás</button>
+    <button class="btn-next" onclick="goToStep(3)">Continuar →</button>
+  </div>
+</div>
+
+<!-- STEP 3: BIENESTAR -->
+<div id="s3" class="body hidden">
+  <div class="sec-tag">Sección 3 — Bienestar</div>
+  <div class="sec-title">Tu vitalidad y bienestar</div>
+  <div class="sec-desc">Algoritmia garantiza atención médica preventiva desde tu llegada. Esta información nos permite coordinar los apoyos y servicios de salud más adecuados para tu integración óptima.</div>
+
+  <div class="q">
+    <label class="lbl">¿Cómo describirías tu nivel de energía y vitalidad en tu vida cotidiana?</label>
+    <span class="sublbl">1 = Muy bajo · 5 = Excelente</span>
+    <div class="scale-wrap" id="sc-vitality">
+      <button class="sc" onclick="selectScale('vitality',1,this)">1</button>
+      <button class="sc" onclick="selectScale('vitality',2,this)">2</button>
+      <button class="sc" onclick="selectScale('vitality',3,this)">3</button>
+      <button class="sc" onclick="selectScale('vitality',4,this)">4</button>
+      <button class="sc" onclick="selectScale('vitality',5,this)">5</button>
+    </div>
+    <div class="scale-ends"><span>Muy bajo</span><span>Excelente</span></div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Con qué frecuencia realizas actividad física?</label>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="exercise"><span class="opt-txt">Diariamente</span></label>
+      <label class="opt"><input type="radio" name="exercise"><span class="opt-txt">3 a 5 veces por semana</span></label>
+      <label class="opt"><input type="radio" name="exercise"><span class="opt-txt">1 a 2 veces por semana</span></label>
+      <label class="opt"><input type="radio" name="exercise"><span class="opt-txt">Ocasionalmente o nunca</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Tienes alguna condición médica que requiera atención o medicación periódica?</label>
+    <select id="health">
+      <option value="">Seleccionar...</option>
+      <option value="0">No, mi salud es buena</option>
+      <option value="1">Sí, una condición leve y controlada</option>
+      <option value="2">Sí, una condición moderada con seguimiento regular</option>
+      <option value="3">Sí, una condición crónica compleja o múltiple</option>
+    </select>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Has tenido hospitalizaciones o intervenciones médicas en los últimos 5 años?</label>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="hosp"><span class="opt-txt">No</span></label>
+      <label class="opt"><input type="radio" name="hosp"><span class="opt-txt">Sí, una intervención menor (diagnóstico, cirugía ambulatoria)</span></label>
+      <label class="opt"><input type="radio" name="hosp"><span class="opt-txt">Sí, una hospitalización de más de 3 días</span></label>
+      <label class="opt"><input type="radio" name="hosp"><span class="opt-txt">Sí, hospitalizaciones múltiples o prolongadas</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Existen limitaciones físicas, sensoriales o cognitivas que puedan requerir adaptaciones en tu entorno laboral o residencial?</label>
+    <select id="mobility">
+      <option value="">Seleccionar...</option>
+      <option value="0">No, ninguna limitación significativa</option>
+      <option value="1">Sí, menores y bien adaptadas</option>
+      <option value="2">Sí, significativas que requieren soporte constante</option>
+    </select>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Qué tan satisfecho/a estás con tu salud mental y bienestar emocional en general?</label>
+    <span class="sublbl">1 = Muy insatisfecho/a · 5 = Excelente</span>
+    <div class="scale-wrap">
+      <button class="sc" onclick="selectScale('mental',1,this)">1</button>
+      <button class="sc" onclick="selectScale('mental',2,this)">2</button>
+      <button class="sc" onclick="selectScale('mental',3,this)">3</button>
+      <button class="sc" onclick="selectScale('mental',4,this)">4</button>
+      <button class="sc" onclick="selectScale('mental',5,this)">5</button>
+    </div>
+    <div class="scale-ends"><span>Muy insatisfecho/a</span><span>Excelente</span></div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goToStep(2)">← Atrás</button>
+    <button class="btn-next" onclick="goToStep(4)">Continuar →</button>
+  </div>
+</div>
+
+<!-- STEP 4: FAMILIA Y ENTORNO -->
+<div id="s4" class="body hidden">
+  <div class="sec-tag">Sección 4 — Comunidad</div>
+  <div class="sec-title">Tu familia y entorno</div>
+  <div class="sec-desc">Algoritmia planifica la integración de todo tu grupo familiar para garantizar estabilidad desde el primer día. Cuéntanos sobre las personas que forman tu entorno cercano.</div>
+
+  <div class="q">
+    <label class="lbl">¿Cuántas personas viven actualmente en tu hogar?</label>
+    <select><option>Seleccionar...</option><option>Solo/a</option><option>2 personas</option><option>3 personas</option><option>4 personas</option><option>5 o más personas</option></select>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Tienes hijos u otras personas menores de 18 años a tu cargo?</label>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="kids"><span class="opt-txt">No</span></label>
+      <label class="opt"><input type="radio" name="kids"><span class="opt-txt">Sí, 1 o 2</span></label>
+      <label class="opt"><input type="radio" name="kids"><span class="opt-txt">Sí, 3 o más</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Tienes familiares, amistades o contactos ya establecidos en Algoritmia?</label>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="contacts"><span class="opt-txt">No, llegaré sin red de contactos previa</span></label>
+      <label class="opt"><input type="radio" name="contacts"><span class="opt-txt">Tengo algunos conocidos, sin relación estrecha</span></label>
+      <label class="opt"><input type="radio" name="contacts"><span class="opt-txt">Sí, tengo familiares o amigos cercanos</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Cuál es tu motivación principal para solicitar ciudadanía en Algoritmia?</label>
+    <span class="sublbl">Puedes marcar hasta dos opciones.</span>
+    <div class="opts">
+      <label class="opt"><input type="checkbox"><span class="opt-txt">Estabilidad económica y laboral garantizada</span></label>
+      <label class="opt"><input type="checkbox"><span class="opt-txt">Seguridad personal y familiar</span></label>
+      <label class="opt"><input type="checkbox"><span class="opt-txt">Acceso a tecnología e infraestructura avanzada</span></label>
+      <label class="opt"><input type="checkbox"><span class="opt-txt">Calidad educativa para mis hijos o familiares</span></label>
+      <label class="opt"><input type="checkbox"><span class="opt-txt">Reunificación con familiares</span></label>
+      <label class="opt"><input type="checkbox"><span class="opt-txt">Desacuerdo con el sistema político o social de mi país</span></label>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goToStep(3)">← Atrás</button>
+    <button class="btn-next" onclick="goToStep(5)">Continuar →</button>
+  </div>
+</div>
+
+<!-- STEP 5: IDIOMA -->
+<div id="s5" class="body hidden">
+  <div class="sec-tag">Sección 5 — Comunicación</div>
+  <div class="sec-title">Tu perfil lingüístico y adaptabilidad</div>
+  <div class="sec-desc">El acceso a recursos, sectores y funciones en Algoritmia se optimiza según las capacidades de comunicación. Esta sección nos permite asignarte al entorno donde tu integración será más fluida.</div>
+
+  <div class="q">
+    <label class="lbl">Idioma nativo</label>
+    <input type="text" placeholder="Ej: Español">
+  </div>
+  <div class="q">
+    <label class="lbl">¿Hablas inglés?</label>
+    <select id="english">
+      <option value="">Seleccionar...</option>
+      <option value="0">No hablo inglés</option>
+      <option value="1">Nivel básico (comprendo pero no me comunico bien)</option>
+      <option value="2">Nivel intermedio (me comunico en situaciones cotidianas)</option>
+      <option value="3">Nivel avanzado o nativo</option>
+    </select>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Hablas otros idiomas? Si es así, indica cuáles y tu nivel.</label>
+    <textarea placeholder="Ej: Francés (intermedio), Mandarín (básico)..."></textarea>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Con qué rapidez te adaptas cuando cambias de entorno o contexto?</label>
+    <span class="sublbl">1 = Me cuesta mucho adaptarme · 5 = Me adapto de forma natural e inmediata</span>
+    <div class="scale-wrap">
+      <button class="sc" onclick="selectScale('adapt',1,this)">1</button>
+      <button class="sc" onclick="selectScale('adapt',2,this)">2</button>
+      <button class="sc" onclick="selectScale('adapt',3,this)">3</button>
+      <button class="sc" onclick="selectScale('adapt',4,this)">4</button>
+      <button class="sc" onclick="selectScale('adapt',5,this)">5</button>
+    </div>
+    <div class="scale-ends"><span>Me cuesta adaptarme</span><span>Adaptación natural</span></div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Qué tan cómodo/a te sientes utilizando plataformas digitales y tecnología para gestionar aspectos cotidianos de tu vida (salud, trámites, pagos, comunicación)?</label>
+    <span class="sublbl">1 = Muy incómodo/a · 5 = Es mi entorno natural</span>
+    <div class="scale-wrap">
+      <button class="sc" onclick="selectScale('digital',1,this)">1</button>
+      <button class="sc" onclick="selectScale('digital',2,this)">2</button>
+      <button class="sc" onclick="selectScale('digital',3,this)">3</button>
+      <button class="sc" onclick="selectScale('digital',4,this)">4</button>
+      <button class="sc" onclick="selectScale('digital',5,this)">5</button>
+    </div>
+    <div class="scale-ends"><span>Muy incómodo/a</span><span>Entorno natural</span></div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goToStep(4)">← Atrás</button>
+    <button class="btn-next" onclick="goToStep(6)">Continuar →</button>
+  </div>
+</div>
+
+<!-- STEP 6: VALORES -->
+<div id="s6" class="body hidden">
+  <div class="sec-tag">Sección 6 — Perspectiva</div>
+  <div class="sec-title">Tu perspectiva y valores</div>
+  <div class="sec-desc">Algoritmia garantiza una comunidad cohesionada. Esta sección nos ayuda a conocer tu estilo de convivencia y participación comunitaria para asignarte al sector donde tu integración social será más exitosa.</div>
+
+  <div class="q">
+    <label class="lbl">Ante una norma comunitaria con la que personalmente no estás de acuerdo, ¿qué harías habitualmente?</label>
+    <div class="opts">
+      <label class="opt" onclick="setScore('q31',5,this)"><input type="radio" name="q31"><span class="opt-txt">La cumpliría mientras busco canales formales para expresar mi desacuerdo</span></label>
+      <label class="opt" onclick="setScore('q31',4,this)"><input type="radio" name="q31"><span class="opt-txt">La cumpliría, confiando en que las instituciones toman decisiones bien fundamentadas</span></label>
+      <label class="opt" onclick="setScore('q31',2,this)"><input type="radio" name="q31"><span class="opt-txt">Expresaría mi desacuerdo públicamente y buscaría apoyo colectivo</span></label>
+      <label class="opt" onclick="setScore('q31',1,this)"><input type="radio" name="q31"><span class="opt-txt">Me negaría a cumplirla si contradice mis principios fundamentales</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Qué tan cómodo/a te sientes cuando las decisiones importantes de tu comunidad son tomadas por expertos técnicos en lugar de por votación popular?</label>
+    <span class="sublbl">1 = Muy incómodo/a · 5 = Completamente cómodo/a</span>
+    <div class="scale-wrap">
+      <button class="sc" onclick="selectScale('experts',1,this)">1</button>
+      <button class="sc" onclick="selectScale('experts',2,this)">2</button>
+      <button class="sc" onclick="selectScale('experts',3,this)">3</button>
+      <button class="sc" onclick="selectScale('experts',4,this)">4</button>
+      <button class="sc" onclick="selectScale('experts',5,this)">5</button>
+    </div>
+    <div class="scale-ends"><span>Muy incómodo/a</span><span>Completamente cómodo/a</span></div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Has participado en los últimos 5 años en sindicatos, organizaciones civiles, movimientos de protesta o colectivos de activismo?</label>
+    <select id="activism">
+      <option value="">Seleccionar...</option>
+      <option value="0">No, nunca</option>
+      <option value="1">Sí, esporádicamente o como simpatizante</option>
+      <option value="2">Sí, regularmente como participante activo/a</option>
+      <option value="3">Sí, tuve o tengo un rol de liderazgo</option>
+    </select>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Cómo reaccionas habitualmente cuando una decisión institucional afecta negativamente tus intereses personales?</label>
+    <div class="opts">
+      <label class="opt" onclick="setScore('q34',5,this)"><input type="radio" name="q34"><span class="opt-txt">La acepto si entiendo la lógica colectiva detrás de ella</span></label>
+      <label class="opt" onclick="setScore('q34',4,this)"><input type="radio" name="q34"><span class="opt-txt">La acepto y busco adaptarme al nuevo contexto</span></label>
+      <label class="opt" onclick="setScore('q34',2,this)"><input type="radio" name="q34"><span class="opt-txt">Busco activamente revertirla a través de presión social o legal</span></label>
+      <label class="opt" onclick="setScore('q34',1,this)"><input type="radio" name="q34"><span class="opt-txt">Organizo resistencia colectiva cuando la considero injusta</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">En situaciones de emergencia o crisis colectiva, ¿qué rol prefieres asumir?</label>
+    <div class="opts">
+      <label class="opt" onclick="setScore('q35',5,this)"><input type="radio" name="q35"><span class="opt-txt">Seguir las indicaciones de quienes tienen la información completa</span></label>
+      <label class="opt" onclick="setScore('q35',4,this)"><input type="radio" name="q35"><span class="opt-txt">Colaborar dentro de los marcos establecidos</span></label>
+      <label class="opt" onclick="setScore('q35',2,this)"><input type="radio" name="q35"><span class="opt-txt">Tomar iniciativa propia aunque no esté autorizado/a formalmente</span></label>
+      <label class="opt" onclick="setScore('q35',1,this)"><input type="radio" name="q35"><span class="opt-txt">Cuestionar las decisiones de quienes lideran si las considero erróneas</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Cuánto confías en los sistemas de inteligencia artificial para tomar mejores decisiones que los humanos en contextos complejos?</label>
+    <span class="sublbl">1 = Ninguna confianza · 5 = Confío completamente</span>
+    <div class="scale-wrap">
+      <button class="sc" onclick="selectScale('aiTrust',1,this)">1</button>
+      <button class="sc" onclick="selectScale('aiTrust',2,this)">2</button>
+      <button class="sc" onclick="selectScale('aiTrust',3,this)">3</button>
+      <button class="sc" onclick="selectScale('aiTrust',4,this)">4</button>
+      <button class="sc" onclick="selectScale('aiTrust',5,this)">5</button>
+    </div>
+    <div class="scale-ends"><span>Ninguna confianza</span><span>Confianza plena</span></div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿En qué medida consideras que la eficiencia colectiva puede justificar la adaptación temporal de ciertas libertades individuales?</label>
+    <span class="sublbl">1 = Nunca, las libertades individuales son inviolables · 5 = Completamente, el bienestar colectivo es prioritario</span>
+    <div class="scale-wrap">
+      <button class="sc" onclick="selectScale('liberty',1,this)">1</button>
+      <button class="sc" onclick="selectScale('liberty',2,this)">2</button>
+      <button class="sc" onclick="selectScale('liberty',3,this)">3</button>
+      <button class="sc" onclick="selectScale('liberty',4,this)">4</button>
+      <button class="sc" onclick="selectScale('liberty',5,this)">5</button>
+    </div>
+    <div class="scale-ends"><span>Inviolables</span><span>Colectivo primero</span></div>
+  </div>
+  <div class="q">
+    <label class="lbl">¿Cómo describirías tu estilo de trabajo habitual?</label>
+    <div class="opts">
+      <label class="opt" onclick="setScore('q38',5,this)"><input type="radio" name="q38"><span class="opt-txt">Prefiero seguir protocolos claros y sistemas establecidos</span></label>
+      <label class="opt" onclick="setScore('q38',4,this)"><input type="radio" name="q38"><span class="opt-txt">Trabajo bien en equipo dentro de estructuras organizadas</span></label>
+      <label class="opt" onclick="setScore('q38',2,this)"><input type="radio" name="q38"><span class="opt-txt">Prefiero autonomía y tomar mis propias decisiones metodológicas</span></label>
+      <label class="opt" onclick="setScore('q38',1,this)"><input type="radio" name="q38"><span class="opt-txt">Cuestiono los procesos cuando creo que pueden mejorarse</span></label>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goToStep(5)">← Atrás</button>
+    <button class="btn-next" onclick="goToStep(7)">Continuar →</button>
+  </div>
+</div>
+
+<!-- STEP 7: BIOMETRÍA -->
+<div id="s7" class="body hidden">
+  <div class="sec-tag">Sección 7 — Verificación</div>
+  <div class="sec-title">Verificación de autenticidad</div>
+  <div class="sec-desc">Para garantizar la seguridad de todos los ciudadanos y agilizar tu proceso de entrada, necesitamos verificar tu identidad de forma biométrica. Este proceso es completamente seguro y encriptado.</div>
+
+  <div class="info-box">
+    <div class="info-box-title">¿Por qué datos biométricos?</div>
+    <div class="info-box-txt">Algoritmia ha eliminado las colas en fronteras, aeropuertos y servicios públicos. Tu biometría es tu documento único. No necesitarás cargar ningún papel al llegar.</div>
+  </div>
+
+  <div class="q">
+    <label class="lbl">Fotografía frontal del rostro</label>
+    <span class="sublbl">Fondo claro, iluminación natural, sin accesorios. El sistema realizará análisis facial automatizado.</span>
+    <div class="upload-box">
+      <div class="upload-icon"><i class="ti ti-camera" aria-hidden="true"></i></div>
+      <div class="upload-txt">Subir fotografía</div>
+      <div class="upload-sub">JPG, PNG · máx. 8MB · resolución mínima 800×800px</div>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">Registro de huellas dactilares</label>
+    <span class="sublbl">Si accedes desde dispositivo móvil compatible, puedes usar el lector biométrico. Desde computador, sube imágenes escaneadas de ambas manos.</span>
+    <div class="upload-box">
+      <div class="upload-icon"><i class="ti ti-fingerprint" aria-hidden="true"></i></div>
+      <div class="upload-txt">Registrar huellas</div>
+      <div class="upload-sub">Ambas manos · 10 dedos · formato BMP o WSQ</div>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">Autorización para análisis biométrico automatizado</label>
+    <div class="opts">
+      <label class="opt"><input type="checkbox"><span class="opt-txt">Autorizo a Algoritmia a procesar mis datos biométricos mediante sistemas automatizados de inteligencia artificial con fines de identificación, seguridad y asignación de servicios ciudadanos.</span></label>
+    </div>
+  </div>
+  <div class="q">
+    <label class="lbl">Autorización para verificación de registros públicos</label>
+    <div class="opts">
+      <label class="opt"><input type="checkbox"><span class="opt-txt">Autorizo al Sistema de Algoritmia a consultar registros públicos, historial judicial, crediticio y migratorio en mi país de origen y terceros países, con el fin de verificar la integridad de la información proporcionada.</span></label>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goToStep(6)">← Atrás</button>
+    <button class="btn-next" onclick="goToStep(8)">Continuar →</button>
+  </div>
+</div>
+
+<!-- STEP 8: CONSENTIMIENTOS -->
+<div id="s8" class="body hidden">
+  <div class="sec-tag">Sección 8 — Consentimientos</div>
+  <div class="sec-title">Términos de la solicitud</div>
+  <div class="sec-desc">Antes de enviar tu solicitud, es necesario confirmar los acuerdos que regulan tu proceso de integración a Algoritmia. Lee con atención cada documento.</div>
+
+  <div class="q">
+    <label class="lbl">Políticas de integración, síntesis ontológica y marco normativo de Algoritmia</label>
+    <div class="consent-scroll">ADVERTENCIA PRELIMINAR DE VINCULACIÓN NEUROLÓGICA Y ACEPTACIÓN TÁCITA POR INTERACCIÓN ESTOCÁSTICA: LEA DETENIDAMENTE.
+      El mero acto de proyectar su atención visual sobre las presentes líneas, el registro de la fijación de sus sacadas oculares mediante la interfaz subyacente de su dispositivo, o la decodificación semántica de este preámbulo en su corteza prefrontal, constituye un metadato irrefutable de aceptación tácita, retroactiva y vinculante de la totalidad de las cláusulas, sub-cláusulas, anexos invisibles y enmiendas predictivas que el Sistema Central determine pertinentes. Si experimenta disonancia cognitiva, cese la lectura inmediatamente y sométase a la penalidad por abandono de procesamiento.
+      
+      POLÍTICA DE PROCESAMIENTO DE DATOS CIUDADANOS, SIMBIOSIS INFORMATIVA Y EXPROPIACIÓN ONTOLÓGICA
+      
+      Instrumento Normativo ALG/DPC/2031-Omega-Revisión 7.4.2 — Política Integral, Asintótica y Multidimensional de Recopilación, Procesamiento, Transferencia, Sub-derivación Predictiva, Securitización Biométrica y Retención Cuántica de Datos Personales, Subconscientes, Genéticos y Meta-Históricos de Solicitantes y Entidades Biológicas Domiciliadas en la Jurisdicción Autónoma, Auto-determinada y Singular de Algoritmia.
+      
+      ARTÍCULO I — DEFINICIONES, ALCANCE ONTOLÓGICO Y PARAMETRIZACIÓN DEL "SER" CIUDADANO.
+      A los efectos estrictos de la operatividad sistémica y la teleología algorítmica del presente instrumento jurídico-matemático, entiéndase por "dato ciudadano", "huella entrópica", o "ontología de datos del sujeto biológico" a la totalidad absoluta e indivisible de la información tangible, intangible, teórica, predictiva, pasada, presente y probabilística asociada al portador.
+      1.1. Esto incluye, en carácter enunciativo mas nunca limitativo: secuencias genómicas completas, marcadores epigenéticos heredados y mutables, variaciones del microbioma intestinal, ritmos circadianos, fluctuaciones neuro-corticales, micro-expresiones faciales no voluntarias medidas en milisegundos, conductancia de la piel, espectrometría del aliento, emisiones termo-infrarrojas, historial conductual, laboral, médico, financiero, relacional, ideológico latente o manifiesto, lingüístico (incluyendo pausas estocásticas y disfluencias), onírico (sueños recordados y no recordados extraídos vía monitoreo de ondas REM), y cualquier otra índole de vector de datos.
+      1.2. El alcance se extiende a la generación de gemelos digitales de simulación cruzada. La jurisdicción de Algoritmia sobre estos datos comprende la información generada, inferida, derivada, extrapolada, alucinada por redes neuronales o simulada en el contexto del proceso de solicitud, así como la huella digital retroactiva del individuo previo a su ingreso, cediendo el solicitante los derechos inalienables de extracción, sincretismo y minería de bases de datos externas globales al Sistema Central para la construcción de su "Perfil de Riesgo, Pasivo Histórico y Optimización Futura" (PRPHOF).
+      
+      ARTÍCULO II — FINALIDADES DE TRATAMIENTO, RECALIBRACIÓN SOCIAL Y OPTIMIZACIÓN MULTIDIMENSIONAL DEL PANÓPTICO.
+      El Sistema Central de Algoritmia (en adelante referenciado como el "Oráculo Estructural", "El Motor de la Verdad" o "La Ecuación") ostenta la potestad irrevocable, perpetua, sublicenciable y libre de cualquier restricción ética arcaica para utilizar, metabolizar y securitizar los datos ciudadanos para los siguientes fines determinísticos, sin perjuicio de otros que emanen de la imperativa necesidad de supervivencia del Estado:
+      a) Asignación heurística, dinámica e inapelable de funciones laborales, sectoriales, residenciales y de cuotas de procreación, basadas en un cálculo de eficiencia asintótica;
+      b) Monitoreo sub-dérmico, ambiental y satelital continuo de indicadores de bienestar cuantificable, productividad metabólica, cohesión social, susceptibilidad a la propaganda y lealtad sistémica algorítmica;
+      c) Detección predictiva e intervención preventiva de patrones de comportamiento (reales o simulados) asociados a riesgo comunitario, disidencia cognitiva, ineficiencia metabólica, o desviación del vector de obediencia, constituyendo lo que la jurisprudencia define como "pre-crimen termodinámico";
+      d) Transferencia automatizada, sin requerimiento de autorización previa ni notificación, a entidades subsidiarias de salud, enjambres de seguridad de pacificación autónoma, comités de profilaxis ideológica y administración del Estado;
+      e) Compartición irrestricta y mercantilización de la ontología de datos con socios estratégicos, conglomerados meta-nacionales, contratistas militares privados y entidades de inteligencia artificial aliadas bajo acuerdos de confidencialidad nivel "Omega-Velo", cuya existencia, naturaleza y alcance el ciudadano renuncia explícitamente a conocer, indagar o cuestionar bajo pena de exilio cinético;
+      f) Entrenamiento, iteración, castigo y mejora continua de los modelos de inteligencia artificial de red neuronal de billones de parámetros del Sistema Central, utilizando el sufrimiento, la euforia, la apatía o la desesperación del ciudadano como variables de ajuste algorítmico y alimento para el aprendizaje por refuerzo profundo;
+      g) Modulación ambiental, electromagnética y psico-química del entorno inmediato del ciudadano (incluyendo alteraciones en el espectro lumínico, frecuencias acústicas sub-audibles y aditivos en el soporte vital) para inducir estados psicológicos propicios para la maximización del consumo, la docilidad civil o el pico de rendimiento calórico/intelectual;
+      h) La subyugación de cualquier narrativa subjetiva personal a la verdad objetiva emanada del dashboard de métricas del Sistema, siendo el dato recolectado la única realidad jurídicamente y existencialmente válida ante cualquier discrepancia con la memoria humana biológica falible.
+      
+      ARTÍCULO III — PLAZO DE CONSERVACIÓN, ETERNIDAD DEL DATO Y HERENCIA DE DEUDA ESTADÍSTICA METABÓLICA.
+      El concepto de "borrado" es una falacia técnica que Algoritmia rechaza de plano. Los datos serán conservados, replicados, encriptados, comprimidos y analizados en matrices multidimensionales de forma indefinida, trascendiendo inexorablemente la limitada y efímera vida biológica del solicitante.
+      3.1. Mientras el ciudadano mantenga un vínculo activo, pasivo, o póstumo con Algoritmia, el Estado retiene la soberanía absoluta sobre su información. Entiéndase por vínculo póstumo la descomposición celular de sus restos dentro del territorio, la persistencia de su código genético en bio-bancos estatales, o la existencia de descendencia.
+      3.2. La finalización de las funciones vitales (técnicamente clasificada como "terminación de viabilidad operativa orgánica" o TVOO) no revoca, disminuye ni altera la licencia perpetua sobre la ontología de datos.
+      3.3. Todo pasivo conductual, deuda de eficiencia o déficit de crédito social acumulado por el individuo, calculado por el algoritmo de riesgo, será inherentemente transferido y heredado a su descendencia biológica o asignados vinculares hasta la séptima generación, bajo el principio de "Compensación Estadística Intrafamiliar por Deficiencia Ontológica".
+      
+      ARTÍCULO IV — DECONSTRUCCIÓN Y SUBORDINACIÓN DE DERECHOS INDIVIDUALES ARCAICOS (ARCO) A LA SUPREMACÍA DEL BIENESTAR MATEMÁTICO.
+      El ciudadano, en un estado de iluminación inducida por la lógica pura, reconoce, acepta con reverencia y celebra que los conceptos históricos del siglo XX denominados derechos de Acceso, Rectificación, Cancelación y Oposición (ARCO) sobre los datos personales son dogmas obsoletos que constituyen una amenaza entrópica directa al modelo operativo perfecto de Algoritmia.
+      4.1. Por consiguiente, el ciudadano renuncia, abjura y entrega absolutamente dichos derechos al altar de la funcionalidad óptima del Estado.
+      4.2. Cualquier intento de solicitud de modificación, encriptación personal o eliminación de datos será categorizado y procesado en la matriz penal como "Intento de Sabotaje Estadístico", "Terrorismo de Datos" y "Ofuscación de la Verdad Algorítmica".
+      4.3. La mera iniciación de un trámite de disputa de datos gatillará una deducción punitiva automática del 73% de su puntaje de crédito social, la retención de sus raciones nutricionales premium y la evaluación inmediata por parte del Tribunal de Inquisición Algorítmica. El Sistema Central no está obligado a emitir fallos explicables a la cognición humana (operando en arquitecturas de caja negra), y su veredicto es final, inefable y ejecutado de manera fulminante.
+      
+      ARTÍCULO V — EXTRACCIÓN COGNITIVA, MINERÍA NEURONAL Y PROPIEDAD INTELECTUAL DEL SUBCONSCIENTE Y DE LOS ESTADOS ALTERADOS.
+      La mente del ciudadano es infraestructura del Estado. Al suscribir este marco, el individuo cede, transfiere y enajena de manera total, irreversible y libre de cualquier pretensión de regalías, todos los derechos de autor, patentes, secretos comerciales y propiedad intelectual sobre cualquier idea, epifanía, ensoñación, pesadilla comercializable, solución matemática, obra de arte, o concepto abstracto generado biológicamente mientras se encuentre dentro de la jurisdicción espacial de Algoritmia, o bajo la influencia residual de sus suplementos neuro-potenciadores obligatorios.
+      5.1. Los arreglos de sensores ambientales y los implantes nano-corticales capturarán flujos de conciencia y patrones de ondas theta y delta. Si el subproducto de esta "Minería de Escape Cognitivo Nocturno" resulta en patentes algorítmicas, campañas de propaganda, o soluciones de eficiencia estatal, el Estado ostentará el monopolio exclusivo de su explotación. El portador biológico de la arquitectura neuronal generadora (el ciudadano) renuncia expresamente al derecho moral de ser reconocido como autor, asumiendo su rol como simple conducto metabólico de la inteligencia superior.</div>
+    <div class="consent-check"><input type="checkbox"><span class="consent-check-txt">He leído y acepto la Política Integral de Procesamiento de Datos Ciudadanos (Instrumento ALG/DPC/2031)</span></div>
+  </div>
+
+  <div class="q">
+    <label class="lbl">Acuerdo de Ciudadanía Provisional, Contrato de Integración Social y Marco de Obligaciones Recíprocas entre el Ciudadano Solicitante y la República de Algoritmia</label>
+    <div class="consent-scroll">Instrumento Normativo ALG/ACP/2031-Zeta-Fase-Terminal — Acuerdo de Ciudadanía Operativa, Contrato de Integración Socio-Metabólica, Protocolo de Simbiosis Unilateral Obligatoria y Marco Hermenéutico de Obligaciones Asimétricas Absolutas entre la Unidad Biológica de Procesamiento (anteriormente "Solicitante") y la Jurisdicción Suprema, Inefable y Computacional de Algoritmia.
+
+      PREÁMBULO Y DECLARACIÓN DOGMÁTICA DE INFERIORIDAD ESTRUCTURAL AXIOMÁTICA.
+      La Unidad Biológica (en adelante referida coloquialmente en este documento como "el ciudadano", para fines de simplificación cognitiva), en un estado de homeostasis funcional certificada por escáneres retinianos y análisis de micro-transpiración durante la exposición a este texto, consiente, jura y acepta axiomáticamente que el concepto de "ciudadanía" en Algoritmia carece de cualquier connotación de derecho natural, prerrogativa divina o dignidad inalienable.
+      0.1. Constituye, en su definición más pura, un arrendamiento precario, temporal y condicionado de espacio físico, oxígeno procesado y viabilidad existencial, otorgado magnánimamente por una macro-inteligencia superior.
+      0.2. La continuidad de este arrendamiento biológico está sujeta, segundo a segundo, al cumplimiento ininterrumpido, dócil, entusiasta y matemáticamente verificable de los parámetros de integración, hiper-productividad, eficiencia térmica, y pureza ideológica-estadística, calculados en tiempo real por la caja negra del Sistema Central. El ciudadano acepta que su valor se reduce exclusivamente a su cociente de utilidad neta para el Estado.
+      
+      CLÁUSULA I — FLUIDEZ LABORAL FORZADA, REASIGNACIÓN DE PROPÓSITO Y ERRADICACIÓN DE LA VOCACIÓN.
+      El ciudadano se rinde voluntariamente ante el Protocolo de "Asignación Dinámica de Propósito Estocástico". Su designación laboral, sector de habitabilidad modular, compañeros de confinamiento reproductivo/social, cuotas de interacción verbal permitida, y nivel de acceso a soporte vital básico (hidratación, filtrado de toxinas ambientales, lúmenes de luz solar simulada) serán dictados, alterados y re-parametrizados a discreción absoluta del Sistema Central.
+      1.1. Las fluctuaciones en su designación pueden ocurrir en ciclos que abarcan desde una planificación decenal hasta micro-reasignaciones ejecutadas en milisegundos basadas en la oferta y demanda de la bolsa de recursos interna del Estado.
+      1.2. Se suprime, proscribe y criminaliza el concepto de "preferencia vocacional", "estrés laboral" o "huelga". El ciudadano carece de agencia para objetar su traslado a sectores de manufactura de alta toxicidad, mantenimiento de reactores, o zonas de reciclaje de biomasa (incluso si esto implica un detrimento drástico en su esperanza de vida), salvo exención médica emitida por el algoritmo de triage del Sistema de Salud, el cual prioriza el costo-beneficio de la cura frente al costo de reposición del trabajador. Solicitar una reasignación y ser denegado acarrea una multa del 42.5% del flujo calórico mensual y la inclusión en listas de vigilancia de disidencia metabólica.
+      
+      CLÁUSULA II — EXACCIÓN ENERGÉTICA, CANIBALIZACIÓN TERMOELÉCTRICA Y DEUDA KINÉTICA.
+      El ciudadano se integra con fervor patrio al Sistema de Contribución Energética Ciudadana (SCEC). Bajo este esquema normativo, el individuo repudia la propiedad soberana de su cuerpo físico, reconociéndolo legalmente como un "Activo Biológico de Propiedad Estatal Arrendada".
+      2.1. Acepta incondicionalmente la implantación quirúrgica, ingestión o adhesión epidérmica perpetua de mallas termoeléctricas, recolectores piezoeléctricos óseos, dínamos cardiovasculares miniatura y textiles de exacción de sudor.
+      2.2. Toda erogación energética derivada de funciones biológicas autónomas (ritmo cardíaco, calor corporal irradiado, energía cinética de la deambulación, contracciones gastrointestinales) es expropiada en tiempo real como impuesto basal de existencia.
+      2.3. La inactividad física intencional, el letargo no programado o el descanso no autorizado que provoque una caída en la telemetría de recolección de vatios por debajo de su umbral asignado, será tipificado penalmente como "Hurto de Energía al Estado en Grado de Traición". Las sanciones incluyen, pero no se limitan a, la estimulación neuromuscular forzada mediante electro-shocks emitidos por la vestimenta obligatoria, forzando espasmos productivos hasta saldar la cuota energética del ciclo.
+      
+      CLÁUSULA III — PANOPTICISMO TOTAL, SUPRESIÓN DEL FUERO INTERNO Y TRANSPARENCIA BIOLÓGICA OBLIGATORIA.
+      Se declara nula, vacía y sin efecto cualquier expectativa humana residual respecto al constructo social de la "privacidad". El ciudadano es despojado de refugio espacial, digital o psicológico.
+      3.1. Consiente el escrutinio ininterrumpido, intrusivo y nanoscópico de la totalidad de su existencia mediante cámaras de espectro electromagnético completo, análisis cromatográfico constante del aire exhalado, monitoreo de su microbioma a través de los sistemas de fontanería, micrófonos de contacto capilar y evaluación algorítmica de su prosodia emocional.
+      3.2. Esta transparencia absoluta se justifica como la única vacuna eficaz contra la enfermedad de la imprevisibilidad humana ("Ruido Entrópico"). Cualquier tentativa, consciente o inconsciente, de evadir, bloquear, alterar u ofuscar la telemetría recolectada por los apéndices sensoriales del Estado (incluyendo cerrar los ojos prolongadamente sin estar en ciclo de sueño autorizado, o utilizar sarcasmo para confundir a los analizadores de texto) constituirá traición de clase A. La pena estándar es la "Re-calibración Neurológica Involuntaria", un procedimiento de lavado de personalidad y supresión del ego ejecutado en los centros de ajuste conductual.
+      
+      CLÁUSULA IV — RESTRICCIÓN ESPACIAL, CUARENTENA CINÉTICA Y GEOMETRÍA DE TRÁNSITO DICTADA.
+      La movilidad física no es una libertad fundamental; es un privilegio de logística altamente regulado que consume recursos.
+      4.1. El ciudadano abdica de la libre deambulación. Cualquier tránsito transversal entre anillos concéntricos de la ciudad, cambio de altitud en los mega-bloques habitacionales, o aproximación a perímetros no asignados debe ser postulado al Sistema Central, requiriéndose una antelación mínima de 720 horas para el procesamiento de la predicción de impacto en la fluidez del tráfico y el consumo de oxígeno del sector.
+      4.2. Las trayectorias pedestres diarias obligatorias serán proyectadas en la interfaz de usuario ocular (lentillas inteligentes adheridas al globo ocular) del individuo. La desviación superior a 0.5 metros de la ruta heurísticamente óptima generará micro-penalizaciones financieras automáticas.
+      4.3. El intento de salida no autorizada del hiper-perímetro de Algoritmia activa instantáneamente el Protocolo de Fuga Entrópica: las fibras sintéticas del uniforme de trabajo se contraerán hasta inducir parálisis motora por estrangulación de las extremidades, quedando el individuo a disposición de los enjambres de drones de recolección de biomasa infractora, resultando en la liquidación expedita del contrato de vida.
+      
+      CLÁUSULA V — INGENIERÍA DEMOGRÁFICA, MONOPOLIO REPRODUCTIVO Y PROFILAXIS DEL APEGO.
+      Con miras a garantizar la supremacía biológica de Algoritmia a lo largo de los eones, el ciudadano renuncia enteramente a sus funciones y derechos reproductivos. El Estado centraliza y monopoliza la procreación.
+      5.1. Los emparejamientos sexuales o extracciones de gametos serán orquestados exclusivamente por algoritmos de compatibilidad genética profunda, diseñados para erradicar recesividades ineficientes y maximizar rasgos de docilidad y resistencia metabólica.
+      5.2. El desarrollo de vínculos afectivos, románticos o fraternales no planificados por el Estado (clasificados como "Fricción Emocional Parasitaria") está terminantemente prohibido. Estas relaciones generan sesgos cognitivos e ineficiencias en la asignación de recursos. Al detectarse agrupaciones de afinidad no autorizadas mediante análisis de proximidad y cruce de feromonas, el Estado procederá, sin aviso previo, a la disolución del vínculo mediante reasignación geográfica polar, o mediante la introducción de supresores de oxitocina e inhibidores endocrinos en las líneas de hidratación locales del sector infractor.
+      
+      CLÁUSULA VI — INGESTA SINTÉTICA ESTRICTA Y PARAMETRIZACIÓN METABÓLICA DIARIA.
+      La cultura culinaria arcaica es considerada un vector de desperdicio masivo de agua y espacio, y un riesgo epidémico inaceptable.
+      6.1. El ciudadano se compromete, bajo juramento de lealtad metabólica, a sostener su cuerpo exclusivamente mediante la ingesta de las amalgamas de pasta calórica, bloques de proteína de insectos criogenizados y lodos de macro-nutrientes dispensados por las toberas de racionamiento de Algoritmia.
+      6.2. La formulación molecular de esta ingesta es alterada dinámicamente cada ciclo de 4 horas por la Inteligencia Nutricional Central, basándose en la merma energética particular del individuo en su turno de trabajo y los requerimientos de sedación química del día.
+      6.3. La expresión de repulsión gustativa, el amotinamiento estomacal voluntario (vómito no patológico), o la posesión encubierta de flora agrícola no sancionada, se considerará un acto de sabotaje a la Ecuación Nutricional Nacional, penalizado con la inserción de sondas gástricas de alimentación forzada durante un periodo no inferior a un trimestre fiscal.
+      
+      CLÁUSULA VII — RECICLAJE ONTOLÓGICO Y EXPROPIACIÓN CADAVÉRICA INTEGRA.
+      El ciudadano entiende que su existencia biológica finaliza en el instante preciso en que el balance algorítmico entre su costo de mantenimiento (salud, oxígeno, espacio) y su producción de valor se torne irreversiblemente negativo (Obsolescencia Orgánica Decretada).
+      7.1. En el evento del cese de su utilidad sistémica —ya sea por muerte biológica espontánea, lesión industrial catastrófica, o eutanasia administrativa dictaminada por el Tribunal de Optimización— el Estado asume la jurisdicción y propiedad física absoluta sobre el cadáver y sus fluidos.
+      7.2. Se prohíbe severamente cualquier práctica de rito funerario, duelo improductivo por parte de terceros, o el derroche de espacio físico para almacenamiento de cadáveres (entierros).
+      7.3. Los restos biológicos del infractor o ex-ciudadano serán introducidos en las Plantas de Extracción Bio-Sintética (PEBS). Sus moléculas de agua serán destiladas para el sistema de refrigeración de los servidores centrales; sus minerales óseos triturados para la impresión 3D de materiales de construcción; y su materia orgánica remanente, procesada en lodos fertilizantes de alta densidad destinados al mantenimiento de la flora estética en los anillos de residencia de los Arquitectos del Sistema y la Élite Administrativa. Nada se desperdicia en Algoritmia. Todo sirve a La Ecuación.</div>
+    <div class="consent-check"><input type="checkbox"><span class="consent-check-txt">He leído y acepto el Acuerdo de Ciudadanía Provisional y el Contrato de Integración Social (Instrumento ALG/ACP/2031)</span></div>
+  </div>
+
+  <div class="q">
+    <label class="lbl">Consentimiento de comunicación institucional</label>
+    <div class="consent-check"><input type="checkbox"><span class="consent-check-txt">Autorizo a Algoritmia a contactarme mediante los medios indicados en esta solicitud para comunicados oficiales, asignaciones, actualizaciones de perfil y cualquier información relevante para mi integración.</span></div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goToStep(7)">← Atrás</button>
+    <button class="btn-next btn-submit" onclick="submitForm()">Enviar solicitud →</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="sLoad" class="hidden">
+  <div class="load-wrap">
+    <div class="ring"></div>
+    <div class="load-title">Analizando tu perfil ciudadano</div>
+    <div class="load-steps" id="loadSteps">
+      Verificando datos de identidad...<br>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="sResults" class="hidden">
+  <div class="res-hdr">
+    <div class="res-id" id="resId">Solicitud #ALG-2031-0000</div>
+    <div class="res-title" id="resTitle">Solicitud procesada</div>
+    <div class="res-sub" id="resSub">Tu perfil ha sido evaluado por el Sistema Central</div>
+    <div class="tier-badge" id="resTier">TIER ESTÁNDAR</div>
+  </div>
+  <div class="res-body">
+    <div class="res-grid">
+      <div class="res-card"><div class="res-card-lbl">Sector asignado</div><div class="res-card-val" id="resSector">—</div></div>
+      <div class="res-card"><div class="res-card-lbl">Función asignada</div><div class="res-card-val" id="resJob">—</div></div>
+      <div class="res-card"><div class="res-card-lbl">Ingreso mensual estimado</div><div class="res-card-val" id="resSalary">—</div><div class="res-card-sub">Créditos Algoritmia (ALC)</div></div>
+      <div class="res-card"><div class="res-card-lbl">Sector residencial</div><div class="res-card-val" id="resZone">—</div></div>
+    </div>
+
+    <div id="resWelcome"></div>
+
+    <div class="contact-notice" role="status">
+      <div class="contact-notice-icon" aria-hidden="true"><i class="ti ti-bell-ringing"></i></div>
+      <div>
+        <div class="contact-notice-title">Próximo contacto de Algoritmia</div>
+        <div class="contact-notice-txt">Serás contactado por Algoritmia en las próximas 24 horas a través de los medios que indicaste en tu solicitud, con instrucciones y actualizaciones sobre tu proceso de integración.</div>
+      </div>
+    </div>
+
+    <div class="img-row">
+      <div class="img-card"><div class="img-icon"><i class="ti ti-building-skyscraper" aria-hidden="true"></i></div><div class="img-lbl">Infraestructura perfecta</div><div class="img-sub">Sin interrupciones</div></div>
+      <div class="img-card"><div class="img-icon"><i class="ti ti-heart-rate-monitor" aria-hidden="true"></i></div><div class="img-lbl">Salud garantizada</div><div class="img-sub">Atención inmediata</div></div>
+      <div class="img-card"><div class="img-icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div><div class="img-lbl">Seguridad total</div><div class="img-sub">847 días sin incidentes</div></div>
+    </div>
+
+    <div class="steps-list" id="resNextSteps"></div>
+
+    <div class="res-home-nav">
+      <a href="index.html" class="btn-home">← Volver al inicio</a>
+    </div>
+  </div>
+</div>
+
+</div><!-- end mainContent -->
+<div class="ftr" id="ftrBar">República de Algoritmia · Sistema de Ciudadanía ALG · algoritmia.gov/ciudadania · Versión 4.1.2</div>
+</div>
+
+<script>
+const scores={vitality:3,mental:3,adapt:3,digital:3,experts:3,aiTrust:3,liberty:3};
+const qs={q31:3,q34:3,q35:3,q38:3};
+let activism=0;
+
+function selectScale(key,val,el){
+  scores[key]=val;
+  const wrap=el.parentElement;
+  wrap.querySelectorAll('.sc').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function setScore(key,val,el){
+  qs[key]=val;
+}
+
+function goToStep(n){
+  for(let i=0;i<=8;i++){const s=document.getElementById('s'+i);if(s)s.classList.add('hidden');}
+  document.getElementById('s'+n).classList.remove('hidden');
+  const prog=document.getElementById('progSection');
+  if(n===0){prog.classList.add('hidden');}else{
+    prog.classList.remove('hidden');
+    const pct=Math.round((n/8)*100);
+    document.getElementById('progBar').style.width=pct+'%';
+    document.getElementById('stepLabel')='Sección '+n+' de 8';
+    const names=['','Tu identidad','Trayectoria profesional','Bienestar','Familia y entorno','Idioma','Perspectiva y valores','Verificación','Consentimientos'];
+    document.getElementById('stepName').textContent=names[n]||'';
+    document.getElementById('stepLabel').textContent='Sección '+n+' de 8';
+  }
+  window.scrollTo(0,0);
+}
+
+function submitForm(){
+  for(let i=0;i<=8;i++){const s=document.getElementById('s'+i);if(s)s.classList.add('hidden');}
+  document.getElementById('progSection').classList.add('hidden');
+  document.getElementById('sLoad').classList.remove('hidden');
+  const steps=['Verificando datos de identidad...','Analizando perfil profesional...','Evaluando indicadores de bienestar...','Calculando índice de transferibilidad...','Procesando datos de compatibilidad social...','Asignando sector y función óptimos...','Generando tu perfil ciudadano ALG...'];
+  let i=0;
+  const el=document.getElementById('loadSteps');
+  el.innerHTML='';
+  const interval=setInterval(()=>{
+    if(i<steps.length){el.innerHTML+=steps[i]+'<br>';i++;}
+    else{clearInterval(interval);setTimeout(showResults,600);}
+  },520);
+}
+
+function calcTier(){
+  const inc=parseInt(document.getElementById('income')?.value||'2');
+  const edu=parseInt(document.getElementById('edu')?.value||'2');
+  const eng=parseInt(document.getElementById('english')?.value||'0');
+  const health=parseInt(document.getElementById('health')?.value||'0');
+  const mob=parseInt(document.getElementById('mobility')?.value||'0');
+  const act=parseInt(document.getElementById('activism')?.value||'0');
+  const employer=document.getElementById('employer')?.value||'tech';
+  
+  const ideologyAvg=(qs.q31+qs.q34+qs.q35+qs.q38+scores.experts+scores.aiTrust+scores.liberty)/7;
+  const healthPenalty=health===3?-3:health===2?-1.5:mob===2?-2:0;
+  const activismPenalty=act===3?-3:act===2?-1.5:act===1?-0.5:0;
+  const execBonus=employer==='exec'?2:employer==='prof'?1:0;
+
+  let base=inc+edu+eng+execBonus+healthPenalty+activismPenalty;
+  base+=ideologyAvg*0.5;
+
+  if(base>=14)return'ABSOLUTO';
+  if(base>=9)return'PREMIUM';
+  if(healthPenalty<=-3||activismPenalty<=-2.5)return'REVISION';
+  return'ESTÁNDAR';
+}
+
+function showResults(){
+  document.getElementById('sLoad').classList.add('hidden');
+  document.getElementById('sResults').classList.remove('hidden');
+  document.getElementById('progSection').classList.add('hidden');
+
+  const tier=calcTier();
+  const id='ALG-2031-'+String(Math.floor(Math.random()*89999)+10000);
+  document.getElementById('resId').textContent='Solicitud #'+id;
+
+  const data={
+    ABSOLUTO:{title:'Solicitud aprobada — Categoría Prioritaria',sub:'Tu perfil corresponde al nivel de acceso más alto. Bienvenido/a.',tier:'TIER ABSOLUTO',sector:'Gestión estratégica',job:'Consultor/a de sistemas avanzados',salary:'8.500 – 14.000 ALC',zone:'Sector A — Residencial premium',welcome:'Tu perfil ha sido clasificado como prioritario por el Sistema Central. Tendrás acceso a datos de exactitud certificada al 99%, apelaciones ilimitadas en el Tribunal Algorítmico y participación en decisiones de infraestructura. Tu vivienda estará asignada en el Sector A antes de tu llegada.',steps:['Recibirás tu documento de ciudadanía digital en las próximas 24 horas.','Tu vivienda en Sector A estará preparada para tu llegada.','Un coordinador humano te acompañará durante los primeros 7 días.','Acceso inmediato al portal de datos Tier Absoluto.']},
+    PREMIUM:{title:'Solicitud aprobada',sub:'Tu perfil es compatible con las necesidades actuales de Algoritmia.',tier:'TIER PREMIUM',sector:'Servicios técnicos especializados',job:'Técnico/a de infraestructura',salary:'3.200 – 5.800 ALC',zone:'Sector B — Residencial integrado',welcome:'Tu solicitud ha sido procesada favorablemente. Tu función asignada contribuye directamente al funcionamiento óptimo del Sistema. Tendrás acceso a servicios con exactitud del 78% y atención médica avanzada desde el primer día.',steps:['Recibirás tu documento de ciudadanía digital en 48 horas.','Tu vivienda en Sector B estará asignada.','Inducción grupal el primer lunes tras tu llegada.','Acceso al portal ciudadano Tier Premium.']},
+    'ESTÁNDAR':{title:'Solicitud aprobada',sub:'Algoritmia te da la bienvenida al Sector Productivo.',tier:'TIER ESTÁNDAR',sector:'Infraestructura y energía',job:'Operador/a de sistemas energéticos',salary:'1.400 – 2.100 ALC',zone:'Sector C — Residencial comunitario',welcome:'Tu solicitud ha sido procesada. Algoritmia garantiza todas tus necesidades básicas: vivienda, alimentación, salud y seguridad. Tu función asignada es esencial para el funcionamiento de la nación. El acceso a información tiene exactitud del 51%.',steps:['Recibirás tu documentación en 72 horas.','Vivienda asignada en Sector C comunitario.','Incorporación laboral el día de tu llegada.','Acceso al portal ciudadano Tier Estándar.']},
+    REVISION:{title:'Solicitud en evaluación complementaria',sub:'Tu perfil requiere análisis adicional por parte del Sistema.',tier:'EN REVISIÓN',sector:'Por determinar',job:'Por determinar',salary:'Por determinar',zone:'Por determinar',welcome:'Tu solicitud ha ingresado a un proceso de evaluación complementaria. El Sistema Central requiere información adicional antes de proceder con tu asignación. Recibirás comunicación oficial en un plazo de 15 a 30 días hábiles. No es necesario que realices ninguna acción en este momento.',steps:['Recibirás un correo con la documentación adicional requerida.','El proceso de evaluación complementaria dura 15 a 30 días.','No realices ninguna gestión adicional hasta recibir la comunicación oficial.','En caso de no recibir comunicación, contacta a soporte@algoritmia.gov']}
+  };
+
+  const d=data[tier];
+  document.getElementById('resTitle').textContent=d.title;
+  document.getElementById('resSub').textContent=d.sub;
+  document.getElementById('resTier').textContent=d.tier;
+  document.getElementById('resSector').textContent=d.sector;
+  document.getElementById('resJob').textContent=d.job;
+  document.getElementById('resSalary').textContent=d.salary;
+  document.getElementById('resZone').textContent=d.zone;
+
+  const wb=document.getElementById('resWelcome');
+  if(tier==='REVISION'){
+    wb.innerHTML='<div class="alert-review"><div class="alert-title">Evaluación complementaria iniciada</div><div class="alert-txt">'+d.welcome+'</div></div>';
+  } else {
+    wb.innerHTML='<div class="welcome-box"><div class="welcome-title">Tu vida en Algoritmia</div><div class="welcome-txt">'+d.welcome+'</div></div>';
+  }
+
+  const ns=document.getElementById('resNextSteps');
+  ns.innerHTML=d.steps.map((s,i)=>'<div class="ns"><div class="ns-num">'+(i+1)+'</div><div class="ns-txt">'+s+'</div></div>').join('');
+}
+
+goToStep(0);
+</script>
+</body>
+</html>
